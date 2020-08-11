@@ -8,5 +8,9 @@ export const GlobalStyles = createGlobalStyle`
 	}
 	body {
 		margin: 0;
+		background: rgb(245,245,245);
+	}
+	a {
+		/* text-decoration: none; */
 	}
 `
