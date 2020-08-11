@@ -19,10 +19,20 @@ export const Home = () => {
 		getPosts()
 	}, [])
 
+	interface PostDetails {
+		body: string
+		createdAt: Date
+		userImage: string
+		userHandle: string
+		postId: string
+		likeCount: number
+		commentCount: number
+	}
+
 	return (
 		<Grid container spacing={2}>
 			<Grid item sm={8} xs={12}>
-				{posts ? posts.map((post, index) => <Post key={index} post={post} />) : <p>Loading...</p>}
+				{posts ? posts.map((post: PostDetails) => <Post key={post.postId} post={post} />) : <p>Loading...</p>}
 			</Grid>
 			<Grid item sm={4} xs={12}>
 				<p>Profile</p>

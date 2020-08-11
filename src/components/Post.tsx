@@ -6,8 +6,10 @@ import CardContent from '@material-ui/core/CardContent'
 import CardMedia from '@material-ui/core/CardMedia'
 import Typography from '@material-ui/core/Typography'
 import { Link } from 'react-router-dom'
+import dayjs from 'dayjs'
+import relativeTime from 'dayjs/plugin/relativeTime'
 
-interface PostDetails {
+interface Post {
 	post: {
 		body: string
 		createdAt: Date
@@ -19,7 +21,9 @@ interface PostDetails {
 	}
 }
 
-const Post = ({ post: { body, createdAt, userImage, userHandle } }: PostDetails) => {
+const Post = ({ post: { body, createdAt, userImage, userHandle } }: Post) => {
+	dayjs.extend(relativeTime)
+
 	return (
 		<StyledCard>
 			<StyledImage image={userImage} title="Profile image" />
@@ -28,7 +32,7 @@ const Post = ({ post: { body, createdAt, userImage, userHandle } }: PostDetails)
 					{userHandle}
 				</StyledHandle>
 				<Typography variant="body2" color="textSecondary">
-					{createdAt}
+					{dayjs(createdAt).fromNow()}
 				</Typography>
 				<Typography variant="body1">{body}</Typography>
 			</StyledContent>
