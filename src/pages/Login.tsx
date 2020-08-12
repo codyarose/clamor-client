@@ -6,6 +6,7 @@ import { History, LocationState } from 'history'
 import Typography from '@material-ui/core/Typography'
 import TextField from '@material-ui/core/TextField'
 import Button from '@material-ui/core/Button'
+import CircularProgress from '@material-ui/core/CircularProgress'
 
 export const Login = (props: { history: History<LocationState> }) => {
 	const [formState, setFormState] = useState({
@@ -72,10 +73,9 @@ export const Login = (props: { history: History<LocationState> }) => {
 						error={!!errors.password}
 					/>
 					{errors.general && <StyledCustomError variant="body2">{errors.general}</StyledCustomError>}
-					<Button variant="contained" color="primary" type="submit">
-						Login
-					</Button>
-					{loading && <p>Loading...</p>}
+					<StyledButton variant="contained" color="primary" type="submit" disabled={loading}>
+						{loading ? <CircularProgress color="inherit" size={24} /> : 'Login'}
+					</StyledButton>
 					<small>
 						Don't have an account? Sign up <Link to="/signup">here</Link>
 					</small>
@@ -112,5 +112,11 @@ const StyledCustomError = styled((props) => <Typography {...props} />)`
 	&& {
 		color: red;
 		padding-bottom: 1rem;
+	}
+`
+
+const StyledButton = styled((props) => <Button {...props} />)`
+	&& {
+		margin-bottom: 1rem;
 	}
 `
