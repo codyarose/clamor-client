@@ -1,12 +1,10 @@
 import React, { useState, ChangeEvent, FormEvent } from 'react'
-import styled from 'styled-components'
 import axios from 'axios'
 import { Link } from 'react-router-dom'
 import { History, LocationState } from 'history'
-import Typography from '@material-ui/core/Typography'
-import TextField from '@material-ui/core/TextField'
-import Button from '@material-ui/core/Button'
 import CircularProgress from '@material-ui/core/CircularProgress'
+
+import FormElements from '../components/common/FormElements'
 
 export const Login = (props: { history: History<LocationState> }) => {
 	const [formState, setFormState] = useState({
@@ -26,8 +24,9 @@ export const Login = (props: { history: History<LocationState> }) => {
 		try {
 			setloading(true)
 
-			const postLogin = await axios.post('/login', { ...formState })
-			console.log(postLogin.data)
+			const login = await axios.post('/login', { ...formState })
+			console.log(login.data)
+			localStorage.setItem('FBIdToken', `Bearer ${login.data.token}`)
 
 			setloading(false)
 
@@ -46,11 +45,11 @@ export const Login = (props: { history: History<LocationState> }) => {
 	return (
 		<div>
 			<div>
-				<StyledTitle variant="h3" component="h1">
+				<FormElements.Title variant="h3" component="h1">
 					Login
-				</StyledTitle>
-				<StyledForm noValidate onSubmit={handleSubmit}>
-					<StyledTextField
+				</FormElements.Title>
+				<FormElements.Form noValidate onSubmit={handleSubmit}>
+					<FormElements.TextInput
 						id="email"
 						name="email"
 						type="email"
@@ -61,7 +60,7 @@ export const Login = (props: { history: History<LocationState> }) => {
 						helperText={errors.email}
 						error={!!errors.email}
 					/>
-					<StyledTextField
+					<FormElements.TextInput
 						id="password"
 						name="password"
 						type="password"
@@ -72,51 +71,17 @@ export const Login = (props: { history: History<LocationState> }) => {
 						helperText={errors.password}
 						error={!!errors.password}
 					/>
-					{errors.general && <StyledCustomError variant="body2">{errors.general}</StyledCustomError>}
-					<StyledButton variant="contained" color="primary" type="submit" disabled={loading}>
+					{errors.general && (
+						<FormElements.ErrorText variant="body2">{errors.general}</FormElements.ErrorText>
+					)}
+					<FormElements.Submit variant="contained" color="primary" type="submit" disabled={loading}>
 						{loading ? <CircularProgress color="inherit" size={24} /> : 'Login'}
-					</StyledButton>
+					</FormElements.Submit>
 					<small>
 						Don't have an account? Sign up <Link to="/signup">here</Link>
 					</small>
-				</StyledForm>
+				</FormElements.Form>
 			</div>
 		</div>
 	)
 }
-
-const StyledForm = styled.form`
-	display: flex;
-	flex-flow: column;
-	align-items: center;
-	text-align: center;
-`
-
-const StyledTitle = styled((props) => <Typography {...props} />)`
-	&& {
-		margin-bottom: 1rem;
-		text-align: center;
-	}
-`
-
-const StyledTextField = styled((props) => <TextField {...props} />)`
-	&& {
-		margin-bottom: 1rem;
-		&:last-of-type {
-			margin-bottom: 1.5rem;
-		}
-	}
-`
-
-const StyledCustomError = styled((props) => <Typography {...props} />)`
-	&& {
-		color: red;
-		padding-bottom: 1rem;
-	}
-`
-
-const StyledButton = styled((props) => <Button {...props} />)`
-	&& {
-		margin-bottom: 1rem;
-	}
-`
