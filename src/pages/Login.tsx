@@ -1,40 +1,26 @@
 import React, { useState, ChangeEvent, FormEvent } from 'react'
-import axios from 'axios'
 import { Link } from 'react-router-dom'
 import { History, LocationState } from 'history'
 import CircularProgress from '@material-ui/core/CircularProgress'
+import { useSelector, useDispatch } from 'react-redux'
 
+import { loginUser } from '../redux/actions/userActions'
+import { RootState } from '../redux/reducers/rootReducer'
 import FormElements from '../components/common/FormElements'
 
 export const Login = (props: { history: History<LocationState> }) => {
+	const { loading, errors } = useSelector((state: RootState) => state.ui)
+	const dispatch = useDispatch()
+
 	const [formState, setFormState] = useState({
 		email: '',
 		password: '',
 	})
-	const [loading, setloading] = useState(false)
-	const [errors, setErrors] = useState({
-		email: '',
-		password: '',
-		general: '',
-	})
 
-	const handleSubmit = async (e: FormEvent<HTMLFormElement>) => {
+	const handleSubmit = (e: FormEvent<HTMLFormElement>) => {
 		e.preventDefault()
 
-		try {
-			setloading(true)
-
-			const login = await axios.post('/login', { ...formState })
-			console.log(login.data)
-			localStorage.setItem('FBIdToken', `Bearer ${login.data.token}`)
-
-			setloading(false)
-
-			props.history.push('/')
-		} catch (error) {
-			setErrors(error.response.data)
-			setloading(false)
-		}
+		dispatch(loginUser(formState, props.history))
 	}
 
 	const handleChange = (e: ChangeEvent<HTMLInputElement>) => {
