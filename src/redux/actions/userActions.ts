@@ -1,5 +1,5 @@
 import axios from 'axios'
-import { Dispatch } from 'redux'
+import { Dispatch, Action } from 'redux'
 import { History, LocationState } from 'history'
 
 export enum ActionType {
@@ -18,10 +18,7 @@ export const loginUser = (userData: { email: string; password: string }, history
 	dispatch({ type: ActionType.LOADING_UI })
 	try {
 		const login = await axios.post('/login', { ...userData })
-		console.log(login.data)
-		const FBIdToken = `Bearer ${login.data.token}`
-		localStorage.setItem('FBIdToken', FBIdToken)
-		axios.defaults.headers.common['Authorization'] = FBIdToken
+		setAuthHeader(login.data.token)
 
 		const user = await axios.get('/user')
 		dispatch({
@@ -36,4 +33,39 @@ export const loginUser = (userData: { email: string; password: string }, history
 			payload: error.response.data,
 		})
 	}
+}
+
+export const signupUser = (newUserData: { email: string; password: string }, history: History<LocationState>) => async (
+	dispatch: Dispatch<Action<ActionType>>,
+) => {
+	dispatch({ type: ActionType.LOADING_UI })
+	try {
+		const signup = await axios.post('/signup', { ...newUserData })
+		setAuthHeader(signup.data.token)
+
+		const user = await axios.get('/user')
+		dispatch({
+			type: ActionType.SET_USER,
+			payload: user.data,
+		})
+		dispatch({ type: ActionType.CLEAR_ERRORS })
+		history.push('/')
+	} catch (error) {
+		dispatch({
+			type: ActionType.SET_ERRORS,
+			payload: error.response.data,
+		})
+	}
+}
+
+export const logoutUser = () => (dispatch: Dispatch) => {
+	localStorage.removeItem('FBIdToken')
+	delete axios.defaults.headers.common['Authorization']
+	dispatch({ type: ActionType.SET_UNAUTHENTICATED })
+}
+
+const setAuthHeader = (token: string) => {
+	const FBIdToken = `Bearer ${token}`
+	localStorage.setItem('FBIdToken', FBIdToken)
+	axios.defaults.headers.common['Authorization'] = FBIdToken
 }
