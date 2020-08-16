@@ -20,11 +20,13 @@ export const loginUser = (userData: { email: string; password: string }, history
 		const login = await axios.post('/login', { ...userData })
 		setAuthHeader(login.data.token)
 
+		dispatch({ type: ActionType.LOADING_USER })
 		const user = await axios.get('/user')
 		dispatch({
 			type: ActionType.SET_USER,
 			payload: user.data,
 		})
+
 		dispatch({ type: ActionType.CLEAR_ERRORS })
 		history.push('/')
 	} catch (error) {
@@ -43,11 +45,13 @@ export const signupUser = (newUserData: { email: string; password: string }, his
 		const signup = await axios.post('/signup', { ...newUserData })
 		setAuthHeader(signup.data.token)
 
+		dispatch({ type: ActionType.LOADING_USER })
 		const user = await axios.get('/user')
 		dispatch({
 			type: ActionType.SET_USER,
 			payload: user.data,
 		})
+
 		dispatch({ type: ActionType.CLEAR_ERRORS })
 		history.push('/')
 	} catch (error) {
@@ -62,6 +66,23 @@ export const logoutUser = () => (dispatch: Dispatch) => {
 	localStorage.removeItem('FBIdToken')
 	delete axios.defaults.headers.common['Authorization']
 	dispatch({ type: ActionType.SET_UNAUTHENTICATED })
+}
+
+export const getUserData = () => async (dispatch: Dispatch) => {
+	try {
+		dispatch({ type: ActionType.LOADING_USER })
+		const user = await axios.get('/user', { headers: { Authorization: localStorage.getItem('FBIdToken') } })
+		console.log('ran')
+		dispatch({
+			type: ActionType.SET_USER,
+			payload: user.data,
+		})
+	} catch (error) {
+		dispatch({
+			type: ActionType.SET_ERRORS,
+			payload: error.response.data,
+		})
+	}
 }
 
 const setAuthHeader = (token: string) => {

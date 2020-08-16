@@ -4,7 +4,7 @@ import { ThemeProvider } from 'styled-components'
 import jwtDecode from 'jwt-decode'
 import { useDispatch } from 'react-redux'
 
-import { logoutUser, ActionType } from './redux/actions/userActions'
+import { logoutUser, ActionType, getUserData } from './redux/actions/userActions'
 import theme from './theme'
 import { GlobalStyles } from './theme/globals'
 import { Home } from './pages/Home'
@@ -26,13 +26,7 @@ const App = () => {
 		} else {
 			dispatch({ type: ActionType.SET_UNAUTHENTICATED })
 			axios.defaults.headers.common['Authorization'] = token
-			;(async () => {
-				const user = await axios.get('/user')
-				dispatch({
-					type: ActionType.SET_USER,
-					payload: user.data,
-				})
-			})()
+			dispatch(getUserData())
 		}
 	}
 
