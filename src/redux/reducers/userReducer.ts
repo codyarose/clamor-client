@@ -11,6 +11,7 @@ interface Credentials {
 
 export interface UserState {
 	authenticated: boolean
+	loading: false
 	credentials: Partial<Credentials>
 	likes: any[]
 	notifications: any[]
@@ -18,6 +19,7 @@ export interface UserState {
 
 const initialState: UserState = {
 	authenticated: false,
+	loading: false,
 	credentials: {},
 	likes: [],
 	notifications: [],
@@ -35,7 +37,13 @@ const userReducer: Reducer<UserState> = (state = initialState, action) => {
 		case ActionType.SET_USER:
 			return {
 				authenticated: true,
+				loading: false,
 				...action.payload,
+			}
+		case ActionType.LOADING_USER:
+			return {
+				...state,
+				loading: true,
 			}
 		default:
 			return state

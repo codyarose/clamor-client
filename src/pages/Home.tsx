@@ -3,6 +3,7 @@ import axios from 'axios'
 import Grid from '@material-ui/core/Grid'
 
 import Post from '../components/Post'
+import Profile from '../components/Profile'
 
 export const Home = () => {
 	const [posts, setPosts] = useState([])
@@ -35,7 +36,7 @@ export const Home = () => {
 				{posts ? posts.map((post: PostDetails) => <Post key={post.postId} post={post} />) : <p>Loading...</p>}
 			</Grid>
 			<Grid item sm={4} xs={12}>
-				<p>Profile</p>
+				<Profile />
 			</Grid>
 		</Grid>
 	)
