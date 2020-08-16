@@ -1,9 +1,17 @@
 import { ActionType } from '../actions/userActions'
 import { Reducer } from 'redux'
 
+interface Credentials {
+	createdAt: Date
+	imageUrl: string
+	email: string
+	userId: string
+	handle: string
+}
+
 export interface UserState {
 	authenticated: boolean
-	credentials: unknown
+	credentials: Partial<Credentials>
 	likes: any[]
 	notifications: any[]
 }
