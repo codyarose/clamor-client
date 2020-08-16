@@ -1,8 +1,10 @@
 import React from 'react'
 import { BrowserRouter as Router, Switch, Route } from 'react-router-dom'
 import { ThemeProvider } from 'styled-components'
-// import jwtDecode from 'jwt-decode'
+import jwtDecode from 'jwt-decode'
+import { useDispatch } from 'react-redux'
 
+import { logoutUser, ActionType } from './redux/actions/userActions'
 import theme from './theme'
 import { GlobalStyles } from './theme/globals'
 import { Home } from './pages/Home'
@@ -10,16 +12,29 @@ import { Login } from './pages/Login'
 import { Signup } from './pages/Signup'
 import Navbar from './components/Navbar'
 import { Container } from './components/common/Container'
+import axios from 'axios'
 
 const App = () => {
-	// const decodedToken = jwtDecode<{ exp: number }>(localStorage.FBIdToken)
-	// const authenticated = decodedToken.exp * 1000 > Date.now()
+	const dispatch = useDispatch()
 
-	// console.log(authenticated)
-	// useEffect(() => {
-	// 	updateAuthed!(authenticated)
-	// 	// eslint-disable-next-line react-hooks/exhaustive-deps
-	// }, [])
+	const token = localStorage.FBIdToken
+	if (token) {
+		const decodedToken = jwtDecode<{ exp: number }>(token)
+		if (decodedToken.exp * 1000 < Date.now()) {
+			dispatch(logoutUser())
+			window.location.href = '/login'
+		} else {
+			dispatch({ type: ActionType.SET_UNAUTHENTICATED })
+			axios.defaults.headers.common['Authorization'] = token
+			;(async () => {
+				const user = await axios.get('/user')
+				dispatch({
+					type: ActionType.SET_USER,
+					payload: user.data,
+				})
+			})()
+		}
+	}
 
 	return (
 		<ThemeProvider theme={theme}>
