@@ -3,8 +3,8 @@ import { Link } from 'react-router-dom'
 import { History, LocationState } from 'history'
 import CircularProgress from '@material-ui/core/CircularProgress'
 
-import { signupUser } from '../redux/actions/userActions'
-import { RootState } from '../redux/reducers/rootReducer'
+import { signupUser } from '../redux/modules/user'
+import { RootState } from '../redux/store'
 import FormElements from '../components/common/FormElements'
 import { useSelector, useDispatch } from 'react-redux'
 

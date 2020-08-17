@@ -4,8 +4,8 @@ import { History, LocationState } from 'history'
 import CircularProgress from '@material-ui/core/CircularProgress'
 import { useSelector, useDispatch } from 'react-redux'
 
-import { loginUser } from '../redux/actions/userActions'
-import { RootState } from '../redux/reducers/rootReducer'
+import { loginUser } from '../redux/modules/user'
+import { RootState } from '../redux/store'
 import FormElements from '../components/common/FormElements'
 
 export const Login = (props: { history: History<LocationState> }) => {

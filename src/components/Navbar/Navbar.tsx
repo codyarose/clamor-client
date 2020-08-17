@@ -5,7 +5,7 @@ import AppBar from '@material-ui/core/AppBar'
 import Toolbar from '@material-ui/core/Toolbar'
 import Button from '@material-ui/core/Button'
 
-import { RootState } from '../../redux/reducers/rootReducer'
+import { RootState } from '../../redux/store'
 
 const Navbar: FC = () => {
 	const { authenticated } = useSelector((state: RootState) => state.user)
