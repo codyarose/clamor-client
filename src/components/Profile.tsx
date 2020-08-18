@@ -6,17 +6,18 @@ import dayjs from 'dayjs'
 
 import { RootState } from '../redux/store'
 import { uploadImage } from '../redux/modules/user'
+import EditDetails from '../components/EditDetails'
 
 import Paper from '@material-ui/core/Paper'
 import Button from '@material-ui/core/Button'
 import MuiLink from '@material-ui/core/Link'
 import Typography from '@material-ui/core/Typography'
-import IconButton from '@material-ui/core/IconButton'
 import LocationOn from '@material-ui/icons/LocationOn'
 import LinkIcon from '@material-ui/icons/Link'
 import CalendarToday from '@material-ui/icons/CalendarToday'
 import EditIcon from '@material-ui/icons/Edit'
-import Tooltip from '@material-ui/core/Tooltip'
+
+import TooltipButton from './common/TooltipButton'
 
 const Profile: FC = () => {
 	const {
@@ -46,11 +47,9 @@ const Profile: FC = () => {
 						<StyledProfileImage className="profile-image" src={imageUrl} alt="Profile" />
 					</StyledImageWrapper>
 					<input type="file" id="imageInput" onChange={handleImageChange} hidden />
-					<Tooltip title="Change picture" placement="top">
-						<IconButton onClick={handleChangeImage}>
-							<EditIcon color="primary" />
-						</IconButton>
-					</Tooltip>
+					<TooltipButton title="Change picture" onClick={handleChangeImage}>
+						<EditIcon color="primary" />
+					</TooltipButton>
 				</StyledImageContainer>
 				<hr />
 				<StyledProfileDetails>
@@ -62,10 +61,9 @@ const Profile: FC = () => {
 					<hr />
 					{location && (
 						<>
-							<LocationOn color="primary">
-								<span>{location}</span>
-								<hr />
-							</LocationOn>
+							<LocationOn color="primary" />
+							<span>{location}</span>
+							<hr />
 						</>
 					)}
 					{website && (
@@ -80,6 +78,7 @@ const Profile: FC = () => {
 					<CalendarToday color="primary" />
 					<span>Joined {dayjs(createdAt).format('MMM YYYY')}</span>
 				</StyledProfileDetails>
+				<EditDetails />
 			</StyledProfile>
 		</StyledPaper>
 	)

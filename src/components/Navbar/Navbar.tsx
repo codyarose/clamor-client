@@ -1,12 +1,18 @@
 import React, { FC } from 'react'
+import styled from 'styled-components'
 import { useSelector, useDispatch } from 'react-redux'
 import { Link } from 'react-router-dom'
 import AppBar from '@material-ui/core/AppBar'
 import Toolbar from '@material-ui/core/Toolbar'
 import Button from '@material-ui/core/Button'
+import AddIcon from '@material-ui/icons/Add'
+import HomeIcon from '@material-ui/icons/Home'
+import Notifications from '@material-ui/icons/Notifications'
+import LogoutIcon from '@material-ui/icons/PowerSettingsNew'
 
 import { RootState } from '../../redux/store'
 import { logoutUser } from '../../redux/modules/user'
+import TooltipButton from '../common/TooltipButton'
 
 const Navbar: FC = () => {
 	const { authenticated } = useSelector((state: RootState) => state.user)
@@ -14,27 +20,54 @@ const Navbar: FC = () => {
 
 	return (
 		<AppBar position="sticky">
-			<Toolbar>
-				<Button color="inherit" component={Link} to="/">
-					Home
-				</Button>
+			<StyledToolbar>
 				{authenticated ? (
-					<Button color="inherit" onClick={() => dispatch(logoutUser())}>
-						Logout
-					</Button>
+					<>
+						<StyledToolbarSection>
+							<Link to="/">
+								<TooltipButton title="Home">
+									<HomeIcon />
+								</TooltipButton>
+							</Link>
+							<TooltipButton title="Create a post" onClick={() => console.log('clicked')}>
+								<AddIcon />
+							</TooltipButton>
+						</StyledToolbarSection>
+						<StyledToolbarSection>
+							<TooltipButton title="Notifications" onClick={() => console.log('clicked')}>
+								<Notifications />
+							</TooltipButton>
+							<TooltipButton title="Logout" onClick={() => dispatch(logoutUser())}>
+								<LogoutIcon />
+							</TooltipButton>
+						</StyledToolbarSection>
+					</>
 				) : (
 					<>
-						<Button color="inherit" component={Link} to="/login">
-							Login
-						</Button>
-						<Button color="inherit" component={Link} to="/signup">
-							Signup
-						</Button>
+						<StyledToolbarSection>
+							<Button color="inherit" component={Link} to="/login">
+								Login
+							</Button>
+							<Button color="inherit" component={Link} to="/signup">
+								Signup
+							</Button>
+						</StyledToolbarSection>
 					</>
 				)}
-			</Toolbar>
+			</StyledToolbar>
 		</AppBar>
 	)
 }
 
 export default Navbar
+
+const StyledToolbar = styled(Toolbar)`
+	justify-content: space-between;
+	a {
+		color: inherit;
+	}
+`
+
+const StyledToolbarSection = styled.div`
+	/*  */
+`
