@@ -10,6 +10,9 @@ interface Credentials {
 	email: string
 	userId: string
 	handle: string
+	bio: string
+	website: string
+	location: string
 }
 
 export interface UserState {
@@ -97,6 +100,19 @@ export const logoutUser = () => (dispatch: Dispatch) => {
 
 export const getUserData = () => async (dispatch: Dispatch) => {
 	try {
+		dispatch(loadingUser())
+		const user = await axios.get('/user', { headers: { Authorization: localStorage.getItem('FBIdToken') } })
+		dispatch(setUser(user.data))
+	} catch (error) {
+		dispatch(setErrors(error.response.data))
+	}
+}
+
+export const uploadImage = (formData: FormData) => async (dispatch: Dispatch) => {
+	try {
+		dispatch(loadingUser())
+		await axios.post('/user/image', formData)
+
 		dispatch(loadingUser())
 		const user = await axios.get('/user', { headers: { Authorization: localStorage.getItem('FBIdToken') } })
 		dispatch(setUser(user.data))
