@@ -1,8 +1,9 @@
 import React from 'react'
 import { BrowserRouter as Router, Switch, Route } from 'react-router-dom'
+import { useDispatch } from 'react-redux'
 import { ThemeProvider } from 'styled-components'
 import jwtDecode from 'jwt-decode'
-import { useDispatch } from 'react-redux'
+import axios from 'axios'
 
 import { logoutUser, getUserData, setUnauthed } from './redux/modules/user'
 import theme from './theme'
@@ -12,7 +13,7 @@ import { Login } from './pages/Login'
 import { Signup } from './pages/Signup'
 import Navbar from './components/Navbar'
 import { Container } from './components/common/Container'
-import axios from 'axios'
+import AuthRoute from './components/common/AuthRoute'
 
 const App = () => {
 	const dispatch = useDispatch()
@@ -38,8 +39,8 @@ const App = () => {
 				<Container>
 					<Switch>
 						<Route exact path="/" component={Home} />
-						<Route exact path="/login" component={Login} />
-						<Route exact path="/signup" component={Signup} />
+						<AuthRoute exact path="/login" component={Login} />
+						<AuthRoute exact path="/signup" component={Signup} />
 					</Switch>
 				</Container>
 			</Router>

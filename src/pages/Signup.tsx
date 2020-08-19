@@ -1,6 +1,5 @@
 import React, { useState, ChangeEvent, FormEvent } from 'react'
 import { Link } from 'react-router-dom'
-import { History, LocationState } from 'history'
 import CircularProgress from '@material-ui/core/CircularProgress'
 
 import { signupUser } from '../redux/modules/user'
@@ -8,7 +7,7 @@ import { RootState } from '../redux/store'
 import FormElements from '../components/common/FormElements'
 import { useSelector, useDispatch } from 'react-redux'
 
-export const Signup = (props: { history: History<LocationState> }) => {
+export const Signup = () => {
 	const { loading, errors } = useSelector((state: RootState) => state.ui)
 	const dispatch = useDispatch()
 
@@ -21,7 +20,7 @@ export const Signup = (props: { history: History<LocationState> }) => {
 
 	const handleSubmit = async (e: FormEvent<HTMLFormElement>) => {
 		e.preventDefault()
-		dispatch(signupUser(formState, props.history))
+		dispatch(signupUser(formState))
 	}
 
 	const handleChange = (e: ChangeEvent<HTMLInputElement>) => {

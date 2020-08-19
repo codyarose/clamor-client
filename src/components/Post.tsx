@@ -1,13 +1,21 @@
-import React from 'react'
+import React, { useState, useEffect } from 'react'
+import { Link } from 'react-router-dom'
+import { useSelector, useDispatch } from 'react-redux'
 import styled from 'styled-components'
+import dayjs from 'dayjs'
+import relativeTime from 'dayjs/plugin/relativeTime'
 
 import Card from '@material-ui/core/Card'
 import CardContent from '@material-ui/core/CardContent'
 import CardMedia from '@material-ui/core/CardMedia'
 import Typography from '@material-ui/core/Typography'
-import { Link } from 'react-router-dom'
-import dayjs from 'dayjs'
-import relativeTime from 'dayjs/plugin/relativeTime'
+import ChatIcon from '@material-ui/icons/Chat'
+import FavoriteBorderIcon from '@material-ui/icons/FavoriteBorder'
+import FavoriteIcon from '@material-ui/icons/Favorite'
+
+import TooltipButton from './common/TooltipButton'
+import { RootState } from '../redux/store'
+import { likePost, unlikePost } from '../redux/modules/data'
 
 interface Post {
 	post: {
@@ -21,8 +29,40 @@ interface Post {
 	}
 }
 
-const Post = ({ post: { body, createdAt, userImage, userHandle } }: Post) => {
+const Post = ({ post: { body, createdAt, userImage, userHandle, postId, likeCount, commentCount } }: Post) => {
 	dayjs.extend(relativeTime)
+	const { likes, authenticated } = useSelector((state: RootState) => state.user)
+	const dispatch = useDispatch()
+
+	const [liked, setLiked] = useState(false)
+
+	useEffect(() => {
+		likes && likes.find((like) => like.postId === postId) ? setLiked(true) : setLiked(false)
+	}, [likes, postId])
+	const handleLikePost = () => {
+		dispatch(likePost(postId))
+		setLiked(true)
+	}
+	const handleUnlikePost = () => {
+		dispatch(unlikePost(postId))
+		setLiked(false)
+	}
+
+	const likeButton = !authenticated ? (
+		<TooltipButton title="Like">
+			<Link to="/login">
+				<FavoriteBorderIcon />
+			</Link>
+		</TooltipButton>
+	) : liked ? (
+		<TooltipButton title="Unlike" onClick={handleUnlikePost}>
+			<FavoriteIcon color="primary" />
+		</TooltipButton>
+	) : (
+		<TooltipButton title="Like" onClick={handleLikePost}>
+			<FavoriteBorderIcon color="primary" />
+		</TooltipButton>
+	)
 
 	return (
 		<StyledCard>
@@ -35,6 +75,13 @@ const Post = ({ post: { body, createdAt, userImage, userHandle } }: Post) => {
 					{dayjs(createdAt).fromNow()}
 				</Typography>
 				<Typography variant="body1">{body}</Typography>
+
+				{likeButton}
+				<span>{likeCount} likes</span>
+				<TooltipButton title="Comments">
+					<ChatIcon color="primary" />
+				</TooltipButton>
+				<span>{commentCount} comments</span>
 			</StyledContent>
 		</StyledCard>
 	)

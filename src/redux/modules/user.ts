@@ -1,8 +1,42 @@
-import { createSlice, Dispatch } from '@reduxjs/toolkit'
-import { History, LocationState } from 'history'
+import { createSlice, Dispatch, createAsyncThunk } from '@reduxjs/toolkit'
 import axios from 'axios'
 
 import { loadingUI, clearErrors, setErrors } from './ui'
+
+export const getUserData = createAsyncThunk('user/getUserData', async () => {
+	const user = await axios.get('/user', { headers: { Authorization: localStorage.getItem('FBIdToken') } })
+	return user.data
+})
+
+export const loginUser = createAsyncThunk(
+	'user/loginUser',
+	async (userData: { email: string; password: string }, { dispatch }) => {
+		dispatch(loadingUI())
+		try {
+			const login = await axios.post('/login', { ...userData })
+			setAuthHeader(login.data.token)
+			dispatch(getUserData())
+			dispatch(clearErrors())
+		} catch (error) {
+			dispatch(setErrors(error.response.data))
+		}
+	},
+)
+
+export const signupUser = createAsyncThunk(
+	'user/signupUser',
+	async (newUserData: { email: string; password: string; confirmPassword: string; handle: string }, { dispatch }) => {
+		dispatch(loadingUI())
+		try {
+			const signup = await axios.post('/signup', { ...newUserData })
+			setAuthHeader(signup.data.token)
+			dispatch(getUserData())
+			dispatch(clearErrors())
+		} catch (error) {
+			dispatch(setErrors(error.response.data))
+		}
+	},
+)
 
 interface Credentials {
 	createdAt: Date
@@ -15,12 +49,18 @@ interface Credentials {
 	location: string
 }
 
+interface Like {
+	userHandle: string
+	postId: string
+}
+
 export interface UserState {
 	authenticated: boolean
 	loading: boolean
 	credentials: Partial<Credentials>
-	likes: any[]
+	likes: Like[]
 	notifications: any[]
+	error: {}
 }
 
 const initialState: UserState = {
@@ -29,15 +69,13 @@ const initialState: UserState = {
 	credentials: {},
 	likes: [],
 	notifications: [],
+	error: {},
 }
 
 const userSlice = createSlice({
 	name: 'user',
 	initialState,
 	reducers: {
-		setAuthed: (state) => {
-			state.authenticated = true
-		},
 		setUnauthed: () => initialState,
 		setUser: (state, action) => {
 			const { credentials, likes, notifications } = action.payload
@@ -50,62 +88,42 @@ const userSlice = createSlice({
 		loadingUser: (state) => {
 			state.loading = true
 		},
+		addToLikes: (state, action) => {
+			state.likes.push({
+				userHandle: state.credentials.handle || '',
+				postId: action.payload.postId,
+			})
+		},
+		removeFromLikes: (state, action) => {
+			state.likes = state.likes.filter((like) => like.postId !== action.payload.postId)
+		},
+	},
+	extraReducers: (builder) => {
+		builder.addCase(getUserData.pending, (state) => {
+			state.loading = true
+		})
+		builder.addCase(getUserData.fulfilled, (state, { payload }) => {
+			const { credentials, likes, notifications } = payload
+			state.authenticated = true
+			state.loading = false
+			state.credentials = credentials
+			state.likes = likes
+			state.notifications = notifications
+		})
+		builder.addCase(getUserData.rejected, (state, { error }) => {
+			state.error = error
+		})
 	},
 })
 
-export const { setAuthed, setUnauthed, setUser, loadingUser } = userSlice.actions
+export const { setUnauthed, setUser, loadingUser, addToLikes, removeFromLikes } = userSlice.actions
 
 export default userSlice.reducer
-
-export const loginUser = (userData: { email: string; password: string }, history: History<LocationState>) => async (
-	dispatch: Dispatch,
-) => {
-	dispatch(loadingUI())
-	try {
-		const login = await axios.post('/login', { ...userData })
-		setAuthHeader(login.data.token)
-		dispatch(loadingUser())
-		const user = await axios.get('/user')
-		dispatch(setUser(user.data))
-		dispatch(clearErrors())
-		history.push('/')
-	} catch (error) {
-		dispatch(setErrors(error.response.data))
-	}
-}
-
-export const signupUser = (
-	newUserData: { email: string; password: string; confirmPassword: string; handle: string },
-	history: History<LocationState>,
-) => async (dispatch: Dispatch) => {
-	dispatch(loadingUI())
-	try {
-		const signup = await axios.post('/signup', { ...newUserData })
-		setAuthHeader(signup.data.token)
-		dispatch(loadingUser())
-		const user = await axios.get('/user')
-		dispatch(setUser(user.data))
-		dispatch(clearErrors())
-		history.push('/')
-	} catch (error) {
-		dispatch(setErrors(error.response.data))
-	}
-}
 
 export const logoutUser = () => (dispatch: Dispatch) => {
 	localStorage.removeItem('FBIdToken')
 	delete axios.defaults.headers.common['Authorization']
 	dispatch(setUnauthed())
-}
-
-export const getUserData = () => async (dispatch: Dispatch) => {
-	try {
-		dispatch(loadingUser())
-		const user = await axios.get('/user', { headers: { Authorization: localStorage.getItem('FBIdToken') } })
-		dispatch(setUser(user.data))
-	} catch (error) {
-		dispatch(setErrors(error.response.data))
-	}
 }
 
 export const uploadImage = (formData: FormData) => async (dispatch: Dispatch) => {
