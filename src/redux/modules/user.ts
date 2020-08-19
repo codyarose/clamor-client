@@ -38,6 +38,26 @@ export const signupUser = createAsyncThunk(
 	},
 )
 
+export const uploadImage = createAsyncThunk('user/uploadImage', async (formData: FormData, { dispatch }) => {
+	try {
+		await axios.post('/user/image', formData)
+		dispatch(getUserData())
+		return
+	} catch (error) {
+		dispatch(setErrors(error.response.data))
+	}
+})
+
+export const editUserDetails = createAsyncThunk('user/editUserDetails', async (userDetails: unknown, { dispatch }) => {
+	try {
+		await axios.post('/user', userDetails)
+		dispatch(getUserData())
+		return
+	} catch (error) {
+		dispatch(setErrors(error.response.data))
+	}
+})
+
 interface Credentials {
 	createdAt: Date
 	imageUrl: string
@@ -124,32 +144,6 @@ export const logoutUser = () => (dispatch: Dispatch) => {
 	localStorage.removeItem('FBIdToken')
 	delete axios.defaults.headers.common['Authorization']
 	dispatch(setUnauthed())
-}
-
-export const uploadImage = (formData: FormData) => async (dispatch: Dispatch) => {
-	try {
-		dispatch(loadingUser())
-		await axios.post('/user/image', formData)
-
-		dispatch(loadingUser())
-		const user = await axios.get('/user', { headers: { Authorization: localStorage.getItem('FBIdToken') } })
-		dispatch(setUser(user.data))
-	} catch (error) {
-		dispatch(setErrors(error.response.data))
-	}
-}
-
-export const editUserDetails = (userDetails: unknown) => async (dispatch: Dispatch) => {
-	try {
-		dispatch(loadingUser())
-		await axios.post('/user', userDetails)
-
-		dispatch(loadingUser())
-		const user = await axios.get('/user', { headers: { Authorization: localStorage.getItem('FBIdToken') } })
-		dispatch(setUser(user.data))
-	} catch (error) {
-		dispatch(setErrors(error.response.data))
-	}
 }
 
 const setAuthHeader = (token: string) => {
