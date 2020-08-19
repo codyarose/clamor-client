@@ -14,6 +14,7 @@ import FavoriteBorderIcon from '@material-ui/icons/FavoriteBorder'
 import FavoriteIcon from '@material-ui/icons/Favorite'
 
 import TooltipButton from './common/TooltipButton'
+import DeletePost from './DeletePost'
 import { RootState } from '../redux/store'
 import { likePost, unlikePost } from '../redux/modules/data'
 
@@ -31,7 +32,11 @@ interface Post {
 
 const Post = ({ post: { body, createdAt, userImage, userHandle, postId, likeCount, commentCount } }: Post) => {
 	dayjs.extend(relativeTime)
-	const { likes, authenticated } = useSelector((state: RootState) => state.user)
+	const {
+		likes,
+		authenticated,
+		credentials: { handle },
+	} = useSelector((state: RootState) => state.user)
 	const dispatch = useDispatch()
 
 	const [liked, setLiked] = useState(false)
@@ -71,6 +76,7 @@ const Post = ({ post: { body, createdAt, userImage, userHandle, postId, likeCoun
 				<StyledHandle variant="h5" component={Link} to={`/users/${userHandle}`} color="primary">
 					{userHandle}
 				</StyledHandle>
+				{authenticated && userHandle === handle && <StyledDeletePost postId={postId} />}
 				<Typography variant="body2" color="textSecondary">
 					{dayjs(createdAt).fromNow()}
 				</Typography>
@@ -103,7 +109,15 @@ const StyledImage = styled((props) => <CardMedia {...props} />)`
 `
 
 const StyledContent = styled(CardContent)`
+	position: relative;
+	width: 100%;
 	&& {
 		padding: 1.5rem;
 	}
+`
+
+const StyledDeletePost = styled(DeletePost)`
+	position: absolute;
+	right: 0;
+	bottom: 0;
 `

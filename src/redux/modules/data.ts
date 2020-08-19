@@ -33,6 +33,15 @@ export const unlikePost = createAsyncThunk('data/unlikePost', async (postId: str
 	}
 })
 
+export const deletePost = createAsyncThunk('data/deletePost', async (postId: string, { dispatch }) => {
+	try {
+		const post = await axios.delete(`/post/${postId}`)
+		return post.data
+	} catch (error) {
+		dispatch(setErrors(error.response.data))
+	}
+})
+
 export interface DataState {
 	posts: any[]
 	post: unknown
@@ -64,6 +73,10 @@ const dataSlice = createSlice({
 		builder.addCase(unlikePost.fulfilled, (state, { payload }) => {
 			const index = state.posts.findIndex((post) => post.postId === payload.postId)
 			state.posts[index] = payload
+		})
+		builder.addCase(deletePost.fulfilled, (state, { payload }) => {
+			const index = state.posts.findIndex((post) => post.postId === payload.postId)
+			state.posts.splice(index, 1)
 		})
 	},
 })
