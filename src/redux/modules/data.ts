@@ -4,10 +4,20 @@ import axios from 'axios'
 import { addToLikes, removeFromLikes } from './user'
 import { setErrors, loadingUI, clearErrors } from './ui'
 
-export const getPosts = createAsyncThunk('data/getPosts', async (_, { dispatch }) => {
+export const getAllPosts = createAsyncThunk('data/getPosts', async (_, { dispatch }) => {
 	try {
 		const posts = await axios.get('/posts')
 		return posts.data
+	} catch (error) {
+		dispatch(setErrors(error.response.data))
+	}
+})
+
+export const getPost = createAsyncThunk('data/getPost', async (postId, { dispatch }) => {
+	try {
+		dispatch(loadingUI())
+		const post = await axios.get(`/posts/${postId}`)
+		return post.data
 	} catch (error) {
 		dispatch(setErrors(error.response.data))
 	}
@@ -47,7 +57,7 @@ export const addPost = createAsyncThunk('data/addPost', async (newPost: { body: 
 		dispatch(loadingUI())
 		const post = await axios.post('/post', newPost)
 		dispatch(clearErrors())
-		dispatch(getPosts())
+		dispatch(getAllPosts())
 		return post.data
 	} catch (error) {
 		dispatch(setErrors(error.response.data))
@@ -71,10 +81,10 @@ const dataSlice = createSlice({
 	initialState,
 	reducers: {},
 	extraReducers: (builder) => {
-		builder.addCase(getPosts.pending, (state) => {
+		builder.addCase(getAllPosts.pending, (state) => {
 			state.loading = true
 		})
-		builder.addCase(getPosts.fulfilled, (state, { payload }) => {
+		builder.addCase(getAllPosts.fulfilled, (state, { payload }) => {
 			state.posts = payload
 			state.loading = false
 		})
@@ -92,6 +102,9 @@ const dataSlice = createSlice({
 		})
 		builder.addCase(addPost.fulfilled, (state, { payload }) => {
 			payload && state.posts.push(payload)
+		})
+		builder.addCase(getPost.fulfilled, (state, { payload }) => {
+			state.post = payload
 		})
 	},
 })

@@ -5,14 +5,14 @@ import Grid from '@material-ui/core/Grid'
 import Post from '../components/Post'
 import Profile from '../components/Profile'
 import { RootState } from '../redux/store'
-import { getPosts } from '../redux/modules/data'
+import { getAllPosts } from '../redux/modules/data'
 
 export const Home = () => {
 	const { posts, loading } = useSelector((state: RootState) => state.data)
 	const dispatch = useDispatch()
 
 	useEffect(() => {
-		dispatch(getPosts())
+		dispatch(getAllPosts())
 	}, [dispatch])
 
 	return (
