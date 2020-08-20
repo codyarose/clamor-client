@@ -5,6 +5,7 @@ import IconButton from '@material-ui/core/IconButton'
 interface Props {
 	title: string
 	onClick?: () => void
+	className?: string
 	placement?:
 		| 'bottom-end'
 		| 'bottom-start'
@@ -20,8 +21,8 @@ interface Props {
 		| 'top'
 }
 
-const TooltipButton: FC<Props> = ({ onClick, title, children, placement = 'bottom' }) => (
-	<Tooltip title={title} placement={placement}>
+const TooltipButton: FC<Props> = ({ onClick, title, children, placement = 'bottom', className }) => (
+	<Tooltip title={title} placement={placement} className={className}>
 		<IconButton onClick={onClick} color="inherit">
 			{children}
 		</IconButton>
