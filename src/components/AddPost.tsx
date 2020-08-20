@@ -1,4 +1,4 @@
-import React, { FC, useState, ChangeEvent, FormEvent } from 'react'
+import React, { FC, useState, ChangeEvent, FormEvent, useEffect } from 'react'
 import { useDispatch, useSelector } from 'react-redux'
 import styled from 'styled-components'
 
@@ -11,11 +11,13 @@ import CircularProgress from '@material-ui/core/CircularProgress'
 
 import { RootState } from '../redux/store'
 import { addPost } from '../redux/modules/data'
+import { clearErrors } from '../redux/modules/ui'
 import TooltipButton from './common/TooltipButton'
 import FormElements from '../components/common/FormElements'
 
 const AddPost: FC = () => {
 	const { loading, errors } = useSelector((state: RootState) => state.ui)
+	const { posts } = useSelector((state: RootState) => state.data)
 	const dispatch = useDispatch()
 
 	const [open, setOpen] = useState<boolean>(false)
@@ -23,7 +25,10 @@ const AddPost: FC = () => {
 		body: '',
 	})
 
-	const toggleOpen = () => setOpen(!open)
+	const toggleOpen = () => {
+		setOpen(!open)
+		dispatch(clearErrors())
+	}
 
 	const handleInputChange = (e: ChangeEvent<HTMLInputElement>) => {
 		const { name, value } = e.target
@@ -36,8 +41,11 @@ const AddPost: FC = () => {
 	const handleSubmit = (e: FormEvent<HTMLFormElement>) => {
 		e.preventDefault()
 		dispatch(addPost(formData))
-		!loading && setOpen(false)
 	}
+
+	useEffect(() => {
+		setOpen(false)
+	}, [posts])
 
 	return (
 		<>
