@@ -70,26 +70,30 @@ const Post = ({ post: { body, createdAt, userImage, userHandle, postId, likeCoun
 	)
 
 	return (
-		<StyledCard>
-			<StyledImage image={userImage} title="Profile image" />
-			<StyledContent>
-				<StyledHandle variant="h5" component={Link} to={`/users/${userHandle}`} color="primary">
-					{userHandle}
-				</StyledHandle>
-				{authenticated && userHandle === handle && <StyledDeletePost postId={postId} />}
-				<Typography variant="body2" color="textSecondary">
-					{dayjs(createdAt).fromNow()}
-				</Typography>
-				<Typography variant="body1">{body}</Typography>
+		<>
+			{body && (
+				<StyledCard>
+					<StyledImage image={userImage} title="Profile image" />
+					<StyledContent>
+						<StyledHandle variant="h5" component={Link} to={`/users/${userHandle}`} color="primary">
+							{userHandle}
+						</StyledHandle>
+						{authenticated && userHandle === handle && <StyledDeletePost postId={postId} />}
+						<Typography variant="body2" color="textSecondary">
+							{dayjs(createdAt).fromNow()}
+						</Typography>
+						<Typography variant="body1">{body}</Typography>
 
-				{likeButton}
-				<span>{likeCount} likes</span>
-				<TooltipButton title="Comments">
-					<ChatIcon color="primary" />
-				</TooltipButton>
-				<span>{commentCount} comments</span>
-			</StyledContent>
-		</StyledCard>
+						{likeButton}
+						<span>{likeCount} likes</span>
+						<TooltipButton title="Comments">
+							<ChatIcon color="primary" />
+						</TooltipButton>
+						<span>{commentCount} comments</span>
+					</StyledContent>
+				</StyledCard>
+			)}
+		</>
 	)
 }
 

@@ -5,7 +5,6 @@ import { Link } from 'react-router-dom'
 import AppBar from '@material-ui/core/AppBar'
 import Toolbar from '@material-ui/core/Toolbar'
 import Button from '@material-ui/core/Button'
-import AddIcon from '@material-ui/icons/Add'
 import HomeIcon from '@material-ui/icons/Home'
 import Notifications from '@material-ui/icons/Notifications'
 import LogoutIcon from '@material-ui/icons/PowerSettingsNew'
@@ -13,6 +12,7 @@ import LogoutIcon from '@material-ui/icons/PowerSettingsNew'
 import { RootState } from '../../redux/store'
 import { logoutUser } from '../../redux/modules/user'
 import TooltipButton from '../common/TooltipButton'
+import AddPost from '../AddPost'
 
 const Navbar: FC = () => {
 	const { authenticated } = useSelector((state: RootState) => state.user)
@@ -29,9 +29,7 @@ const Navbar: FC = () => {
 									<HomeIcon />
 								</TooltipButton>
 							</Link>
-							<TooltipButton title="Create a post" onClick={() => console.log('clicked')}>
-								<AddIcon />
-							</TooltipButton>
+							<AddPost />
 						</StyledToolbarSection>
 						<StyledToolbarSection>
 							<TooltipButton title="Notifications" onClick={() => console.log('clicked')}>

@@ -2,7 +2,7 @@ import { createSlice, createAsyncThunk } from '@reduxjs/toolkit'
 import axios from 'axios'
 
 import { addToLikes, removeFromLikes } from './user'
-import { setErrors } from './ui'
+import { setErrors, loadingUI, clearErrors } from './ui'
 
 export const getPosts = createAsyncThunk('data/getPosts', async (_, { dispatch }) => {
 	try {
@@ -35,7 +35,19 @@ export const unlikePost = createAsyncThunk('data/unlikePost', async (postId: str
 
 export const deletePost = createAsyncThunk('data/deletePost', async (postId: string, { dispatch }) => {
 	try {
-		const post = await axios.delete(`/post/${postId}`)
+		await axios.delete(`/post/${postId}`)
+		return postId
+	} catch (error) {
+		dispatch(setErrors(error.response.data))
+	}
+})
+
+export const addPost = createAsyncThunk('data/addPost', async (newPost: { body: string }, { dispatch }) => {
+	try {
+		dispatch(loadingUI())
+		const post = await axios.post('/post', newPost)
+		dispatch(clearErrors())
+		dispatch(getPosts())
 		return post.data
 	} catch (error) {
 		dispatch(setErrors(error.response.data))
@@ -75,8 +87,11 @@ const dataSlice = createSlice({
 			state.posts[index] = payload
 		})
 		builder.addCase(deletePost.fulfilled, (state, { payload }) => {
-			const index = state.posts.findIndex((post) => post.postId === payload.postId)
+			const index = state.posts.findIndex((post) => post.postId === payload)
 			state.posts.splice(index, 1)
+		})
+		builder.addCase(addPost.fulfilled, (state, { payload }) => {
+			payload && state.posts.push(payload)
 		})
 	},
 })
