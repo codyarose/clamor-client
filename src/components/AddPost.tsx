@@ -70,9 +70,9 @@ const AddPost: FC = () => {
 							onChange={handleInputChange}
 							fullWidth
 						/>
-						<FormElements.Submit type="submit" variant="contained" color="primary" disabled={loading}>
+						<StyledSubmitButton type="submit" variant="contained" color="primary" disabled={loading}>
 							{loading ? <CircularProgress color="inherit" size={24} /> : 'Submit'}
-						</FormElements.Submit>
+						</StyledSubmitButton>
 					</FormElements.Form>
 				</DialogContent>
 			</Dialog>
@@ -83,6 +83,10 @@ const AddPost: FC = () => {
 export default AddPost
 
 const StyledCloseButton = styled(TooltipButton)`
+	align-self: flex-end;
+`
+
+const StyledSubmitButton = styled(FormElements.Submit)`
 	align-self: flex-end;
 `
 
