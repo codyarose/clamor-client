@@ -10,10 +10,9 @@ import CardContent from '@material-ui/core/CardContent'
 import CardMedia from '@material-ui/core/CardMedia'
 import Typography from '@material-ui/core/Typography'
 import ChatIcon from '@material-ui/icons/Chat'
-import FavoriteBorderIcon from '@material-ui/icons/FavoriteBorder'
-import FavoriteIcon from '@material-ui/icons/Favorite'
 
 import TooltipButton from './common/TooltipButton'
+import ToggleLikeButton from './common/ToggleLikeButton'
 import PostDetails from './PostDetails'
 import DeletePost from './DeletePost'
 import { RootState } from '../redux/store'
@@ -45,6 +44,7 @@ const Post = ({ post: { body, createdAt, userImage, userHandle, postId, likeCoun
 	useEffect(() => {
 		likes && likes.find((like) => like.postId === postId) ? setLiked(true) : setLiked(false)
 	}, [likes, postId])
+
 	const handleLikePost = () => {
 		dispatch(likePost(postId))
 		setLiked(true)
@@ -53,22 +53,6 @@ const Post = ({ post: { body, createdAt, userImage, userHandle, postId, likeCoun
 		dispatch(unlikePost(postId))
 		setLiked(false)
 	}
-
-	const likeButton = !authenticated ? (
-		<TooltipButton title="Like">
-			<Link to="/login">
-				<FavoriteBorderIcon />
-			</Link>
-		</TooltipButton>
-	) : liked ? (
-		<TooltipButton title="Unlike" onClick={handleUnlikePost}>
-			<FavoriteIcon color="primary" />
-		</TooltipButton>
-	) : (
-		<TooltipButton title="Like" onClick={handleLikePost}>
-			<FavoriteBorderIcon color="primary" />
-		</TooltipButton>
-	)
 
 	return (
 		<>
@@ -85,7 +69,12 @@ const Post = ({ post: { body, createdAt, userImage, userHandle, postId, likeCoun
 						</Typography>
 						<Typography variant="body1">{body}</Typography>
 
-						{likeButton}
+						<ToggleLikeButton
+							authenticated={authenticated}
+							likeStatus={liked}
+							likeHandler={handleLikePost}
+							unlikeHandler={handleUnlikePost}
+						/>
 						<span>{likeCount} likes</span>
 						<TooltipButton title="Comments">
 							<ChatIcon color="primary" />
