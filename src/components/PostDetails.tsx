@@ -42,7 +42,12 @@ const PostDetails: FC<Props> = ({ postId }) => {
 			<StyledExpandButton title="View post" onClick={toggleOpen}>
 				<UnfoldMore color="primary" />
 			</StyledExpandButton>
-			<StyledDialog open={open} onClose={toggleOpen} fullWidth maxWidth="sm">
+			<StyledDialog
+				open={open}
+				onClose={toggleOpen}
+				fullWidth
+				maxWidth="sm"
+			>
 				<TooltipButton title="Close" onClick={toggleOpen}>
 					<CloseIcon />
 				</TooltipButton>
@@ -55,19 +60,36 @@ const PostDetails: FC<Props> = ({ postId }) => {
 						<Grid container spacing={2}>
 							<Grid item sm={5}>
 								<StyledProfileImgContainer>
-									<StyledProfileImg src={userImage} alt={userHandle} />
+									<StyledProfileImg
+										src={userImage}
+										alt={userHandle}
+									/>
 								</StyledProfileImgContainer>
 							</Grid>
 							<Grid item sm={7}>
-								<Typography component={Link} to={`/users/${userHandle}`} color="primary" variant="h5">
+								<Typography
+									component={Link}
+									to={`/users/${userHandle}`}
+									color="primary"
+									variant="h5"
+								>
 									{userHandle}
 								</Typography>
 								<StyledHR />
-								<Typography variant="body2" color="textSecondary">
-									{dayjs(createdAt).format('h:mm a, MMM DD YYYY')}
+								<Typography
+									variant="body2"
+									color="textSecondary"
+								>
+									{dayjs(createdAt).format(
+										'h:mm a, MMM DD YYYY',
+									)}
 								</Typography>
 								<StyledHR />
-								{body && <Typography variant="body1">{body}</Typography>}
+								{body && (
+									<Typography variant="body1">
+										{body}
+									</Typography>
+								)}
 							</Grid>
 						</Grid>
 					)}

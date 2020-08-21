@@ -30,7 +30,17 @@ interface Post {
 	}
 }
 
-const Post = ({ post: { body, createdAt, userImage, userHandle, postId, likeCount, commentCount } }: Post) => {
+const Post = ({
+	post: {
+		body,
+		createdAt,
+		userImage,
+		userHandle,
+		postId,
+		likeCount,
+		commentCount,
+	},
+}: Post) => {
 	dayjs.extend(relativeTime)
 	const {
 		likes,
@@ -42,7 +52,9 @@ const Post = ({ post: { body, createdAt, userImage, userHandle, postId, likeCoun
 	const [alreadyLiked, setAlreadyLiked] = useState(false)
 
 	useEffect(() => {
-		likes && likes.find((like) => like.postId === postId) ? setAlreadyLiked(true) : setAlreadyLiked(false)
+		likes && likes.find((like) => like.postId === postId)
+			? setAlreadyLiked(true)
+			: setAlreadyLiked(false)
 	}, [likes, postId])
 
 	const handleToggleLike = () => {
@@ -56,10 +68,17 @@ const Post = ({ post: { body, createdAt, userImage, userHandle, postId, likeCoun
 				<StyledCard>
 					<StyledImage image={userImage} title="Profile image" />
 					<StyledContent>
-						<StyledHandle variant="h5" component={Link} to={`/users/${userHandle}`} color="primary">
+						<StyledHandle
+							variant="h5"
+							component={Link}
+							to={`/users/${userHandle}`}
+							color="primary"
+						>
 							{userHandle}
 						</StyledHandle>
-						{authenticated && userHandle === handle && <StyledDeletePost postId={postId} />}
+						{authenticated && userHandle === handle && (
+							<StyledDeletePost postId={postId} />
+						)}
 						<Typography variant="body2" color="textSecondary">
 							{dayjs(createdAt).fromNow()}
 						</Typography>

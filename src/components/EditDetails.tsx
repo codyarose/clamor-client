@@ -13,7 +13,10 @@ import TextField from '@material-ui/core/TextField'
 import DialogActions from '@material-ui/core/DialogActions'
 import Button from '@material-ui/core/Button'
 
-const shallowEqual = (obj1: { [key: string]: string }, obj2: { [key: string]: string }) => {
+const shallowEqual = (
+	obj1: { [key: string]: string },
+	obj2: { [key: string]: string },
+) => {
 	const keys1 = Object.keys(obj1)
 	const keys2 = Object.keys(obj2)
 
@@ -53,13 +56,18 @@ const EditDetails = () => {
 			website: credentials.website || '',
 			location: credentials.location || '',
 		}
-		!shallowEqual(details, originalValues) && dispatch(editUserDetails({ ...details }))
+		!shallowEqual(details, originalValues) &&
+			dispatch(editUserDetails({ ...details }))
 		toggleDialog()
 	}
 
 	return (
 		<>
-			<TooltipButton title="Edit details" placement="top" onClick={toggleDialog}>
+			<TooltipButton
+				title="Edit details"
+				placement="top"
+				onClick={toggleDialog}
+			>
 				<EditIcon />
 			</TooltipButton>
 			<Dialog open={open} onClose={toggleDialog} fullWidth maxWidth="sm">

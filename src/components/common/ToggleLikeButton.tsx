@@ -12,7 +12,11 @@ interface Props {
 	likeHandler: () => void
 }
 
-const ToggleLikeButton: FC<Props> = ({ authenticated, likeStatus, likeHandler }) => {
+const ToggleLikeButton: FC<Props> = ({
+	authenticated,
+	likeStatus,
+	likeHandler,
+}) => {
 	return (
 		<>
 			{!authenticated ? (

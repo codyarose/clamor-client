@@ -4,25 +4,31 @@ import axios from 'axios'
 import { addToLikes, removeFromLikes } from './user'
 import { setErrors, loadingUI, clearErrors, stopLoadingUI } from './ui'
 
-export const getAllPosts = createAsyncThunk('data/getAllPosts', async (_, { dispatch }) => {
-	try {
-		const posts = await axios.get('/posts')
-		return posts.data
-	} catch (error) {
-		dispatch(setErrors(error.response.data))
-	}
-})
+export const getAllPosts = createAsyncThunk(
+	'data/getAllPosts',
+	async (_, { dispatch }) => {
+		try {
+			const posts = await axios.get('/posts')
+			return posts.data
+		} catch (error) {
+			dispatch(setErrors(error.response.data))
+		}
+	},
+)
 
-export const getPost = createAsyncThunk('data/getPost', async (postId: string, { dispatch }) => {
-	try {
-		dispatch(loadingUI())
-		const post = await axios.get(`/post/${postId}`)
-		dispatch(stopLoadingUI())
-		return post.data
-	} catch (error) {
-		dispatch(setErrors(error.response.data))
-	}
-})
+export const getPost = createAsyncThunk(
+	'data/getPost',
+	async (postId: string, { dispatch }) => {
+		try {
+			dispatch(loadingUI())
+			const post = await axios.get(`/post/${postId}`)
+			dispatch(stopLoadingUI())
+			return post.data
+		} catch (error) {
+			dispatch(setErrors(error.response.data))
+		}
+	},
+)
 
 interface ToggleLikeProps {
 	postId: string
@@ -33,8 +39,12 @@ export const toggleLike = createAsyncThunk(
 	'data/toggleLike',
 	async ({ postId, alreadyLiked }: ToggleLikeProps, { dispatch }) => {
 		try {
-			const post = await axios.get(`/post/${postId}/${alreadyLiked ? 'unlike' : 'like'}`)
-			alreadyLiked ? dispatch(removeFromLikes(post.data)) : dispatch(addToLikes(post.data))
+			const post = await axios.get(
+				`/post/${postId}/${alreadyLiked ? 'unlike' : 'like'}`,
+			)
+			alreadyLiked
+				? dispatch(removeFromLikes(post.data))
+				: dispatch(addToLikes(post.data))
 			return post.data
 		} catch (error) {
 			dispatch(setErrors(error.response.data))
@@ -42,26 +52,32 @@ export const toggleLike = createAsyncThunk(
 	},
 )
 
-export const deletePost = createAsyncThunk('data/deletePost', async (postId: string, { dispatch }) => {
-	try {
-		await axios.delete(`/post/${postId}`)
-		return postId
-	} catch (error) {
-		dispatch(setErrors(error.response.data))
-	}
-})
+export const deletePost = createAsyncThunk(
+	'data/deletePost',
+	async (postId: string, { dispatch }) => {
+		try {
+			await axios.delete(`/post/${postId}`)
+			return postId
+		} catch (error) {
+			dispatch(setErrors(error.response.data))
+		}
+	},
+)
 
-export const addPost = createAsyncThunk('data/addPost', async (newPost: { body: string }, { dispatch }) => {
-	try {
-		dispatch(loadingUI())
-		const post = await axios.post('/post', newPost)
-		dispatch(clearErrors())
-		dispatch(getAllPosts())
-		return post.data
-	} catch (error) {
-		dispatch(setErrors(error.response.data))
-	}
-})
+export const addPost = createAsyncThunk(
+	'data/addPost',
+	async (newPost: { body: string }, { dispatch }) => {
+		try {
+			dispatch(loadingUI())
+			const post = await axios.post('/post', newPost)
+			dispatch(clearErrors())
+			dispatch(getAllPosts())
+			return post.data
+		} catch (error) {
+			dispatch(setErrors(error.response.data))
+		}
+	},
+)
 
 export interface DataState {
 	posts: any[]
@@ -101,11 +117,15 @@ const dataSlice = createSlice({
 			state.loading = false
 		})
 		builder.addCase(toggleLike.fulfilled, (state, { payload }) => {
-			const index = state.posts.findIndex((post) => post.postId === payload.postId)
+			const index = state.posts.findIndex(
+				(post) => post.postId === payload.postId,
+			)
 			state.posts[index].likeCount = payload.likeCount
 		})
 		builder.addCase(deletePost.fulfilled, (state, { payload }) => {
-			const index = state.posts.findIndex((post) => post.postId === payload)
+			const index = state.posts.findIndex(
+				(post) => post.postId === payload,
+			)
 			state.posts.splice(index, 1)
 		})
 		builder.addCase(addPost.fulfilled, (state, { payload }) => {

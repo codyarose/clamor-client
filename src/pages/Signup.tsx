@@ -80,13 +80,25 @@ export const Signup = () => {
 						error={!!errors.confirmPassword}
 					/>
 					{errors.general && (
-						<FormElements.ErrorText variant="body2">{errors.general}</FormElements.ErrorText>
+						<FormElements.ErrorText variant="body2">
+							{errors.general}
+						</FormElements.ErrorText>
 					)}
-					<FormElements.Submit variant="contained" color="primary" type="submit" disabled={loading}>
-						{loading ? <CircularProgress color="inherit" size={24} /> : 'Sign up'}
+					<FormElements.Submit
+						variant="contained"
+						color="primary"
+						type="submit"
+						disabled={loading}
+					>
+						{loading ? (
+							<CircularProgress color="inherit" size={24} />
+						) : (
+							'Sign up'
+						)}
 					</FormElements.Submit>
 					<small>
-						Already have an account? Log in <Link to="/login">here</Link>
+						Already have an account? Log in{' '}
+						<Link to="/login">here</Link>
 					</small>
 				</FormElements.Form>
 			</div>

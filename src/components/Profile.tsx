@@ -44,16 +44,33 @@ const Profile: FC = () => {
 			<StyledProfile>
 				<StyledImageContainer>
 					<StyledImageWrapper>
-						<StyledProfileImage className="profile-image" src={imageUrl} alt="Profile" />
+						<StyledProfileImage
+							className="profile-image"
+							src={imageUrl}
+							alt="Profile"
+						/>
 					</StyledImageWrapper>
-					<input type="file" id="imageInput" onChange={handleImageChange} hidden />
-					<TooltipButton title="Change picture" onClick={handleChangeImage}>
+					<input
+						type="file"
+						id="imageInput"
+						onChange={handleImageChange}
+						hidden
+					/>
+					<TooltipButton
+						title="Change picture"
+						onClick={handleChangeImage}
+					>
 						<EditIcon color="primary" />
 					</TooltipButton>
 				</StyledImageContainer>
 				<hr />
 				<StyledProfileDetails>
-					<MuiLink component={Link} to={`/users/${handle}`} color="primary" variant="h5">
+					<MuiLink
+						component={Link}
+						to={`/users/${handle}`}
+						color="primary"
+						variant="h5"
+					>
 						@{handle}
 					</MuiLink>
 					<hr />
@@ -69,7 +86,11 @@ const Profile: FC = () => {
 					{website && (
 						<>
 							<LinkIcon color="primary" />
-							<a href={website} target="_blank" rel="noopener noreferrer">
+							<a
+								href={website}
+								target="_blank"
+								rel="noopener noreferrer"
+							>
 								{website}
 							</a>
 							<hr />
@@ -89,17 +110,35 @@ const Profile: FC = () => {
 				No profile found
 			</Typography>
 			<StyledButtons>
-				<Button variant="contained" color="primary" component={Link} to="/login">
+				<Button
+					variant="contained"
+					color="primary"
+					component={Link}
+					to="/login"
+				>
 					Login
 				</Button>
-				<Button variant="contained" color="secondary" component={Link} to="/signup">
+				<Button
+					variant="contained"
+					color="secondary"
+					component={Link}
+					to="/signup"
+				>
 					Signup
 				</Button>
 			</StyledButtons>
 		</StyledPaper>
 	)
 
-	return !loading ? authenticated ? profileLayout : noProfileLayout : <p>Loading...</p>
+	return !loading ? (
+		authenticated ? (
+			profileLayout
+		) : (
+			noProfileLayout
+		)
+	) : (
+		<p>Loading...</p>
+	)
 }
 
 export default Profile

@@ -56,13 +56,25 @@ export const Login = () => {
 						error={!!errors.password}
 					/>
 					{errors.general && (
-						<FormElements.ErrorText variant="body2">{errors.general}</FormElements.ErrorText>
+						<FormElements.ErrorText variant="body2">
+							{errors.general}
+						</FormElements.ErrorText>
 					)}
-					<FormElements.Submit variant="contained" color="primary" type="submit" disabled={loading}>
-						{loading ? <CircularProgress color="inherit" size={24} /> : 'Login'}
+					<FormElements.Submit
+						variant="contained"
+						color="primary"
+						type="submit"
+						disabled={loading}
+					>
+						{loading ? (
+							<CircularProgress color="inherit" size={24} />
+						) : (
+							'Login'
+						)}
 					</FormElements.Submit>
 					<small>
-						Don't have an account? Sign up <Link to="/signup">here</Link>
+						Don't have an account? Sign up{' '}
+						<Link to="/signup">here</Link>
 					</small>
 				</FormElements.Form>
 			</div>

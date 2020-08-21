@@ -21,7 +21,13 @@ interface Props {
 		| 'top'
 }
 
-const TooltipButton: FC<Props> = ({ onClick, title, children, placement = 'bottom', className }) => (
+const TooltipButton: FC<Props> = ({
+	onClick,
+	title,
+	children,
+	placement = 'bottom',
+	className,
+}) => (
 	<Tooltip title={title} placement={placement} className={className}>
 		<IconButton onClick={onClick} color="inherit">
 			{children}

@@ -4,7 +4,9 @@ import axios from 'axios'
 import { loadingUI, clearErrors, setErrors } from './ui'
 
 export const getUserData = createAsyncThunk('user/getUserData', async () => {
-	const user = await axios.get('/user', { headers: { Authorization: localStorage.getItem('FBIdToken') } })
+	const user = await axios.get('/user', {
+		headers: { Authorization: localStorage.getItem('FBIdToken') },
+	})
 	return user.data
 })
 
@@ -25,7 +27,15 @@ export const loginUser = createAsyncThunk(
 
 export const signupUser = createAsyncThunk(
 	'user/signupUser',
-	async (newUserData: { email: string; password: string; confirmPassword: string; handle: string }, { dispatch }) => {
+	async (
+		newUserData: {
+			email: string
+			password: string
+			confirmPassword: string
+			handle: string
+		},
+		{ dispatch },
+	) => {
 		dispatch(loadingUI())
 		try {
 			const signup = await axios.post('/signup', { ...newUserData })
@@ -38,25 +48,31 @@ export const signupUser = createAsyncThunk(
 	},
 )
 
-export const uploadImage = createAsyncThunk('user/uploadImage', async (formData: FormData, { dispatch }) => {
-	try {
-		await axios.post('/user/image', formData)
-		dispatch(getUserData())
-		return
-	} catch (error) {
-		dispatch(setErrors(error.response.data))
-	}
-})
+export const uploadImage = createAsyncThunk(
+	'user/uploadImage',
+	async (formData: FormData, { dispatch }) => {
+		try {
+			await axios.post('/user/image', formData)
+			dispatch(getUserData())
+			return
+		} catch (error) {
+			dispatch(setErrors(error.response.data))
+		}
+	},
+)
 
-export const editUserDetails = createAsyncThunk('user/editUserDetails', async (userDetails: unknown, { dispatch }) => {
-	try {
-		await axios.post('/user', userDetails)
-		dispatch(getUserData())
-		return
-	} catch (error) {
-		dispatch(setErrors(error.response.data))
-	}
-})
+export const editUserDetails = createAsyncThunk(
+	'user/editUserDetails',
+	async (userDetails: unknown, { dispatch }) => {
+		try {
+			await axios.post('/user', userDetails)
+			dispatch(getUserData())
+			return
+		} catch (error) {
+			dispatch(setErrors(error.response.data))
+		}
+	},
+)
 
 interface Credentials {
 	createdAt: Date
@@ -115,7 +131,9 @@ const userSlice = createSlice({
 			})
 		},
 		removeFromLikes: (state, action) => {
-			state.likes = state.likes.filter((like) => like.postId !== action.payload.postId)
+			state.likes = state.likes.filter(
+				(like) => like.postId !== action.payload.postId,
+			)
 		},
 	},
 	extraReducers: (builder) => {
@@ -136,7 +154,13 @@ const userSlice = createSlice({
 	},
 })
 
-export const { setUnauthed, setUser, loadingUser, addToLikes, removeFromLikes } = userSlice.actions
+export const {
+	setUnauthed,
+	setUser,
+	loadingUser,
+	addToLikes,
+	removeFromLikes,
+} = userSlice.actions
 
 export default userSlice.reducer
 

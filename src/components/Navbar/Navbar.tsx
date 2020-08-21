@@ -32,10 +32,16 @@ const Navbar: FC = () => {
 							<AddPost />
 						</StyledToolbarSection>
 						<StyledToolbarSection>
-							<TooltipButton title="Notifications" onClick={() => console.log('clicked')}>
+							<TooltipButton
+								title="Notifications"
+								onClick={() => console.log('clicked')}
+							>
 								<Notifications />
 							</TooltipButton>
-							<TooltipButton title="Logout" onClick={() => dispatch(logoutUser())}>
+							<TooltipButton
+								title="Logout"
+								onClick={() => dispatch(logoutUser())}
+							>
 								<LogoutIcon />
 							</TooltipButton>
 						</StyledToolbarSection>
@@ -43,10 +49,18 @@ const Navbar: FC = () => {
 				) : (
 					<>
 						<StyledToolbarSection>
-							<Button color="inherit" component={Link} to="/login">
+							<Button
+								color="inherit"
+								component={Link}
+								to="/login"
+							>
 								Login
 							</Button>
-							<Button color="inherit" component={Link} to="/signup">
+							<Button
+								color="inherit"
+								component={Link}
+								to="/signup"
+							>
 								Signup
 							</Button>
 						</StyledToolbarSection>

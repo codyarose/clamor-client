@@ -35,7 +35,9 @@ const DeletePost: FC<Props> = ({ postId, className }) => {
 				<DeleteIcon color="secondary" />
 			</TooltipButton>
 			<Dialog open={open} onClose={toggleOpen} fullWidth maxWidth="sm">
-				<DialogTitle>Are you sure you want to delete this post?</DialogTitle>
+				<DialogTitle>
+					Are you sure you want to delete this post?
+				</DialogTitle>
 				<DialogActions>
 					<Button onClick={toggleOpen} color="primary">
 						Cancel

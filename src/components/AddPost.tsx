@@ -70,8 +70,17 @@ const AddPost: FC = () => {
 							onChange={handleInputChange}
 							fullWidth
 						/>
-						<StyledSubmitButton type="submit" variant="contained" color="primary" disabled={loading}>
-							{loading ? <CircularProgress color="inherit" size={24} /> : 'Submit'}
+						<StyledSubmitButton
+							type="submit"
+							variant="contained"
+							color="primary"
+							disabled={loading}
+						>
+							{loading ? (
+								<CircularProgress color="inherit" size={24} />
+							) : (
+								'Submit'
+							)}
 						</StyledSubmitButton>
 					</FormElements.Form>
 				</DialogContent>
