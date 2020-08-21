@@ -16,7 +16,7 @@ import ToggleLikeButton from './common/ToggleLikeButton'
 import PostDetails from './PostDetails'
 import DeletePost from './DeletePost'
 import { RootState } from '../redux/store'
-import { likePost, unlikePost } from '../redux/modules/data'
+import { toggleLike } from '../redux/modules/data'
 
 interface Post {
 	post: {
@@ -39,19 +39,15 @@ const Post = ({ post: { body, createdAt, userImage, userHandle, postId, likeCoun
 	} = useSelector((state: RootState) => state.user)
 	const dispatch = useDispatch()
 
-	const [liked, setLiked] = useState(false)
+	const [alreadyLiked, setAlreadyLiked] = useState(false)
 
 	useEffect(() => {
-		likes && likes.find((like) => like.postId === postId) ? setLiked(true) : setLiked(false)
+		likes && likes.find((like) => like.postId === postId) ? setAlreadyLiked(true) : setAlreadyLiked(false)
 	}, [likes, postId])
 
-	const handleLikePost = () => {
-		dispatch(likePost(postId))
-		setLiked(true)
-	}
-	const handleUnlikePost = () => {
-		dispatch(unlikePost(postId))
-		setLiked(false)
+	const handleToggleLike = () => {
+		dispatch(toggleLike({ postId, alreadyLiked }))
+		setAlreadyLiked(!alreadyLiked)
 	}
 
 	return (
@@ -71,9 +67,8 @@ const Post = ({ post: { body, createdAt, userImage, userHandle, postId, likeCoun
 
 						<ToggleLikeButton
 							authenticated={authenticated}
-							likeStatus={liked}
-							likeHandler={handleLikePost}
-							unlikeHandler={handleUnlikePost}
+							likeStatus={alreadyLiked}
+							likeHandler={handleToggleLike}
 						/>
 						<span>{likeCount} likes</span>
 						<TooltipButton title="Comments">

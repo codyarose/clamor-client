@@ -24,25 +24,23 @@ export const getPost = createAsyncThunk('data/getPost', async (postId: string, {
 	}
 })
 
-export const likePost = createAsyncThunk('data/likePost', async (postId: string, { dispatch }) => {
-	try {
-		const post = await axios.get(`/post/${postId}/like`)
-		dispatch(addToLikes(post.data))
-		return post.data
-	} catch (error) {
-		dispatch(setErrors(error.response.data))
-	}
-})
+interface ToggleLikeProps {
+	postId: string
+	alreadyLiked: boolean
+}
 
-export const unlikePost = createAsyncThunk('data/unlikePost', async (postId: string, { dispatch }) => {
-	try {
-		const post = await axios.get(`/post/${postId}/unlike`)
-		dispatch(removeFromLikes(post.data))
-		return post.data
-	} catch (error) {
-		dispatch(setErrors(error.response.data))
-	}
-})
+export const toggleLike = createAsyncThunk(
+	'data/toggleLike',
+	async ({ postId, alreadyLiked }: ToggleLikeProps, { dispatch }) => {
+		try {
+			const post = await axios.get(`/post/${postId}/${alreadyLiked ? 'unlike' : 'like'}`)
+			alreadyLiked ? dispatch(removeFromLikes(post.data)) : dispatch(addToLikes(post.data))
+			return post.data
+		} catch (error) {
+			dispatch(setErrors(error.response.data))
+		}
+	},
+)
 
 export const deletePost = createAsyncThunk('data/deletePost', async (postId: string, { dispatch }) => {
 	try {
@@ -102,13 +100,9 @@ const dataSlice = createSlice({
 			state.posts = payload
 			state.loading = false
 		})
-		builder.addCase(likePost.fulfilled, (state, { payload }) => {
+		builder.addCase(toggleLike.fulfilled, (state, { payload }) => {
 			const index = state.posts.findIndex((post) => post.postId === payload.postId)
-			state.posts[index] = payload
-		})
-		builder.addCase(unlikePost.fulfilled, (state, { payload }) => {
-			const index = state.posts.findIndex((post) => post.postId === payload.postId)
-			state.posts[index] = payload
+			state.posts[index].likeCount = payload.likeCount
 		})
 		builder.addCase(deletePost.fulfilled, (state, { payload }) => {
 			const index = state.posts.findIndex((post) => post.postId === payload)
@@ -118,7 +112,6 @@ const dataSlice = createSlice({
 			payload && state.posts.push(payload)
 		})
 		builder.addCase(getPost.fulfilled, (state, { payload }) => {
-			console.log(payload)
 			state.post = payload
 		})
 	},

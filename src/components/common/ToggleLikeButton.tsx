@@ -10,10 +10,9 @@ interface Props {
 	authenticated: boolean
 	likeStatus: boolean
 	likeHandler: () => void
-	unlikeHandler: () => void
 }
 
-const ToggleLikeButton: FC<Props> = ({ authenticated, likeStatus, likeHandler, unlikeHandler }) => {
+const ToggleLikeButton: FC<Props> = ({ authenticated, likeStatus, likeHandler }) => {
 	return (
 		<>
 			{!authenticated ? (
@@ -23,7 +22,7 @@ const ToggleLikeButton: FC<Props> = ({ authenticated, likeStatus, likeHandler, u
 					</TooltipButton>
 				</Link>
 			) : likeStatus ? (
-				<TooltipButton title="Unlike" onClick={unlikeHandler}>
+				<TooltipButton title="Unlike" onClick={likeHandler}>
 					<FavoriteIcon color="secondary" />
 				</TooltipButton>
 			) : (
