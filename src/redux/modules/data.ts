@@ -2,9 +2,9 @@ import { createSlice, createAsyncThunk } from '@reduxjs/toolkit'
 import axios from 'axios'
 
 import { addToLikes, removeFromLikes } from './user'
-import { setErrors, loadingUI, clearErrors } from './ui'
+import { setErrors, loadingUI, clearErrors, stopLoadingUI } from './ui'
 
-export const getAllPosts = createAsyncThunk('data/getPosts', async (_, { dispatch }) => {
+export const getAllPosts = createAsyncThunk('data/getAllPosts', async (_, { dispatch }) => {
 	try {
 		const posts = await axios.get('/posts')
 		return posts.data
@@ -13,10 +13,11 @@ export const getAllPosts = createAsyncThunk('data/getPosts', async (_, { dispatc
 	}
 })
 
-export const getPost = createAsyncThunk('data/getPost', async (postId, { dispatch }) => {
+export const getPost = createAsyncThunk('data/getPost', async (postId: string, { dispatch }) => {
 	try {
 		dispatch(loadingUI())
-		const post = await axios.get(`/posts/${postId}`)
+		const post = await axios.get(`/post/${postId}`)
+		dispatch(stopLoadingUI())
 		return post.data
 	} catch (error) {
 		dispatch(setErrors(error.response.data))
@@ -66,13 +67,26 @@ export const addPost = createAsyncThunk('data/addPost', async (newPost: { body: 
 
 export interface DataState {
 	posts: any[]
-	post: unknown
+	post: {
+		body: string
+		createdAt?: Date
+		likeCount: number
+		commentCount: number
+		userImage: string
+		userHandle: string
+	}
 	loading: boolean
 }
 
 const initialState: DataState = {
 	posts: [],
-	post: {},
+	post: {
+		body: '',
+		likeCount: 0,
+		commentCount: 0,
+		userImage: '',
+		userHandle: '',
+	},
 	loading: false,
 }
 
@@ -104,6 +118,7 @@ const dataSlice = createSlice({
 			payload && state.posts.push(payload)
 		})
 		builder.addCase(getPost.fulfilled, (state, { payload }) => {
+			console.log(payload)
 			state.post = payload
 		})
 	},

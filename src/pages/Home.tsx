@@ -18,7 +18,7 @@ export const Home = () => {
 	return (
 		<Grid container spacing={2}>
 			<Grid item sm={8} xs={12}>
-				{!loading ? posts.map((post) => <Post key={post.postId} post={post} />) : <p>Loading...</p>}
+				{!loading && posts ? posts.map((post) => <Post key={post.postId} post={post} />) : <p>Loading...</p>}
 			</Grid>
 			<Grid item sm={4} xs={12}>
 				<Profile />

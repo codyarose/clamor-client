@@ -14,6 +14,7 @@ import FavoriteBorderIcon from '@material-ui/icons/FavoriteBorder'
 import FavoriteIcon from '@material-ui/icons/Favorite'
 
 import TooltipButton from './common/TooltipButton'
+import PostDetails from './PostDetails'
 import DeletePost from './DeletePost'
 import { RootState } from '../redux/store'
 import { likePost, unlikePost } from '../redux/modules/data'
@@ -91,6 +92,7 @@ const Post = ({ post: { body, createdAt, userImage, userHandle, postId, likeCoun
 						</TooltipButton>
 						<span>{commentCount} comments</span>
 					</StyledContent>
+					{postId && <PostDetails postId={postId} />}
 				</StyledCard>
 			)}
 		</>
