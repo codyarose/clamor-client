@@ -24,9 +24,12 @@ const uiSlice = createSlice({
 		loadingUI: (state) => {
 			state.loading = true
 		},
+		stopLoadingUI: (state) => {
+			state.loading = false
+		},
 	},
 })
 
-export const { setErrors, clearErrors, loadingUI } = uiSlice.actions
+export const { setErrors, clearErrors, loadingUI, stopLoadingUI } = uiSlice.actions
 
 export default uiSlice.reducer
