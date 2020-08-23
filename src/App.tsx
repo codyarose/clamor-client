@@ -12,7 +12,6 @@ import { Home } from './pages/Home'
 import { Login } from './pages/Login'
 import { Signup } from './pages/Signup'
 import Navbar from './components/Navbar'
-import { Container } from './components/common/Container'
 import AuthRoute from './components/common/AuthRoute'
 
 const App = () => {
@@ -36,13 +35,11 @@ const App = () => {
 			<GlobalStyles />
 			<Router>
 				<Navbar />
-				<Container>
-					<Switch>
-						<Route exact path="/" component={Home} />
-						<AuthRoute exact path="/login" component={Login} />
-						<AuthRoute exact path="/signup" component={Signup} />
-					</Switch>
-				</Container>
+				<Switch>
+					<Route exact path="/" component={Home} />
+					<AuthRoute exact path="/login" component={Login} />
+					<AuthRoute exact path="/signup" component={Signup} />
+				</Switch>
 			</Router>
 		</ThemeProvider>
 	)
