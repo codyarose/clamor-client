@@ -1,7 +1,6 @@
 import { createSlice, Dispatch, createAsyncThunk } from '@reduxjs/toolkit'
 import axios from 'axios'
 
-import { setErrors } from './ui'
 import { AppDispatch } from '../store'
 import { setError, clearError } from './errors'
 
@@ -64,9 +63,10 @@ export const uploadImage = createAsyncThunk(
 		try {
 			await axios.post('/user/image', formData)
 			dispatch(getUserData())
+			dispatch(clearError('uploadImage'))
 			return
 		} catch (error) {
-			dispatch(setErrors(error.response.data))
+			dispatch(setError('uploadImage', error.response.data))
 		}
 	},
 )
@@ -79,7 +79,9 @@ export const editUserDetails = createAsyncThunk(
 			dispatch(getUserData())
 			return
 		} catch (error) {
-			dispatch(setErrors(error.response.data))
+			throw new Error(error)
+
+			// dispatch(setError('edit', error.response.data))
 		}
 	},
 )
