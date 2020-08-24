@@ -4,8 +4,13 @@ import Typography from '@material-ui/core/Typography'
 import TextField from '@material-ui/core/TextField'
 import Button from '@material-ui/core/Button'
 
-const Form = styled.form`
+interface FormProps {
+	readonly flexFlow?: 'row' | 'column'
+}
+
+const Form = styled.form<FormProps>`
 	display: flex;
+	flex-flow: ${({ flexFlow }) => (flexFlow ? flexFlow : 'row')};
 	/* flex-flow: column;
 	align-items: center;
 	text-align: center; */
@@ -19,12 +24,7 @@ const Title = styled(Typography)`
 ` as typeof Typography
 
 const TextInput = styled(TextField)`
-	&& {
-		margin-right: 1rem;
-		&:last-of-type {
-			/* margin-bottom: 1.5rem; */
-		}
-	}
+	/*  */
 `
 
 const ErrorText = styled(Typography)`

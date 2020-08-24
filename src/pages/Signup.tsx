@@ -1,5 +1,6 @@
 import React, { useState, ChangeEvent, FormEvent } from 'react'
 import { Link } from 'react-router-dom'
+import styled from 'styled-components'
 import CircularProgress from '@material-ui/core/CircularProgress'
 
 import { signupUser } from '../redux/modules/user'
@@ -34,48 +35,48 @@ export const Signup = () => {
 				<FormElements.Title variant="h3" component="h1">
 					Create an account
 				</FormElements.Title>
-				<FormElements.Form noValidate onSubmit={handleSubmit}>
-					<FormElements.TextInput
+				<StyledForm
+					noValidate
+					onSubmit={handleSubmit}
+					flexFlow="column"
+				>
+					<StyledTextInput
 						id="email"
 						name="email"
 						type="email"
 						label="Email"
 						value={formState.email}
 						onChange={handleChange}
-						fullWidth={true}
 						helperText={errors.email}
 						error={!!errors.email}
 					/>
-					<FormElements.TextInput
+					<StyledTextInput
 						id="handle"
 						name="handle"
 						type="text"
 						label="Username"
 						value={formState.handle}
 						onChange={handleChange}
-						fullWidth={true}
 						helperText={errors.handle}
 						error={!!errors.handle}
 					/>
-					<FormElements.TextInput
+					<StyledTextInput
 						id="password"
 						name="password"
 						type="password"
 						label="Password"
 						value={formState.password}
 						onChange={handleChange}
-						fullWidth={true}
 						helperText={errors.password}
 						error={!!errors.password}
 					/>
-					<FormElements.TextInput
+					<StyledTextInput
 						id="confirmPassword"
 						name="confirmPassword"
 						type="password"
 						label="Confirm password"
 						value={formState.confirmPassword}
 						onChange={handleChange}
-						fullWidth={true}
 						helperText={errors.confirmPassword}
 						error={!!errors.confirmPassword}
 					/>
@@ -84,10 +85,11 @@ export const Signup = () => {
 							{errors.general}
 						</FormElements.ErrorText>
 					)}
-					<FormElements.Submit
+					<StyledSubmit
 						variant="contained"
 						color="primary"
 						type="submit"
+						size="large"
 						disabled={loading}
 					>
 						{loading ? (
@@ -95,13 +97,38 @@ export const Signup = () => {
 						) : (
 							'Sign up'
 						)}
-					</FormElements.Submit>
-					<small>
+					</StyledSubmit>
+					<StyledSmall>
 						Already have an account? Log in{' '}
 						<Link to="/login">here</Link>
-					</small>
-				</FormElements.Form>
+					</StyledSmall>
+				</StyledForm>
 			</div>
 		</div>
 	)
 }
+
+const StyledForm = styled(FormElements.Form)`
+	margin: 0 auto;
+	max-width: 600px;
+`
+
+const StyledTextInput = styled(FormElements.TextInput)`
+	&& {
+		margin-bottom: 1rem;
+		&:last-of-type {
+			margin-bottom: 2rem;
+		}
+	}
+`
+
+const StyledSubmit = styled(FormElements.Submit)`
+	&& {
+		padding: 0.5rem;
+	}
+`
+
+const StyledSmall = styled.small`
+	text-align: center;
+	padding: 2rem 1rem;
+`

@@ -33,11 +33,11 @@ export const Login = () => {
 	return (
 		<StyledLogin>
 			<StyledTitleContainer>
-				<StyledTitle variant="h1">Clamor</StyledTitle>
+				<StyledTitle variant="h1">Clamor&#8253;</StyledTitle>
 			</StyledTitleContainer>
 			<StyledFormContainer>
 				<StyledForm noValidate onSubmit={handleSubmit}>
-					<FormElements.TextInput
+					<StyledTextInput
 						id="email"
 						name="email"
 						type="email"
@@ -48,7 +48,7 @@ export const Login = () => {
 						helperText={errors.email}
 						error={!!errors.email}
 					/>
-					<FormElements.TextInput
+					<StyledTextInput
 						id="password"
 						name="password"
 						type="password"
@@ -135,5 +135,11 @@ const StyledSignupContainer = styled.div`
 	& > span {
 		display: inline-block;
 		margin-bottom: 2rem;
+	}
+`
+
+const StyledTextInput = styled(FormElements.TextInput)`
+	&& {
+		margin-right: 1rem;
 	}
 `
