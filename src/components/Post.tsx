@@ -1,4 +1,4 @@
-import React, { useState, useEffect } from 'react'
+import React, { useState, useEffect, FC } from 'react'
 import { Link } from 'react-router-dom'
 import { useSelector, useDispatch } from 'react-redux'
 import styled from 'styled-components'
@@ -16,21 +16,9 @@ import ToggleLikeButton from './common/ToggleLikeButton'
 import PostDetails from './PostDetails'
 import DeletePost from './DeletePost'
 import { RootState } from '../redux/store'
-import { toggleLike } from '../redux/modules/data'
+import { toggleLike, PostProps } from '../redux/modules/data'
 
-interface Post {
-	post: {
-		body: string
-		createdAt: Date
-		userImage: string
-		userHandle: string
-		postId: string
-		likeCount: number
-		commentCount: number
-	}
-}
-
-const Post = ({
+const Post: FC<{ post: PostProps }> = ({
 	post: {
 		body,
 		createdAt,
@@ -40,7 +28,7 @@ const Post = ({
 		likeCount,
 		commentCount,
 	},
-}: Post) => {
+}) => {
 	dayjs.extend(relativeTime)
 	const {
 		likes,

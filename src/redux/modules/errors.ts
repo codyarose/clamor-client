@@ -13,6 +13,9 @@ export interface ErrorsState {
 		confirmPassword: string
 	}
 	uploadImage: string
+	addPost: {
+		body: string
+	}
 }
 
 const initialState: ErrorsState = {
@@ -28,6 +31,9 @@ const initialState: ErrorsState = {
 		confirmPassword: '',
 	},
 	uploadImage: '',
+	addPost: {
+		body: '',
+	},
 }
 
 function hasKey<O>(obj: O, key: keyof any): key is keyof O {
@@ -60,7 +66,11 @@ const errorsSlice = createSlice({
 				case 'uploadImage':
 					state.uploadImage = initialState.uploadImage
 					break
+				case 'addPost':
+					state.addPost = initialState.addPost
+					break
 				default:
+					state.general = initialState.general
 					break
 			}
 		},

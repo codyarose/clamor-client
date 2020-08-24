@@ -11,13 +11,13 @@ import CircularProgress from '@material-ui/core/CircularProgress'
 
 import { RootState } from '../redux/store'
 import { addPost } from '../redux/modules/data'
-import { clearErrors } from '../redux/modules/ui'
 import TooltipButton from './common/TooltipButton'
 import FormElements from '../components/common/FormElements'
+import { clearError } from '../redux/modules/errors'
 
 const AddPost: FC = () => {
-	const { loading, errors } = useSelector((state: RootState) => state.ui)
-	const { posts } = useSelector((state: RootState) => state.data)
+	const errors = useSelector((state: RootState) => state.errors)
+	const { posts, loading } = useSelector((state: RootState) => state.data)
 	const dispatch = useDispatch()
 
 	const [open, setOpen] = useState<boolean>(false)
@@ -27,7 +27,7 @@ const AddPost: FC = () => {
 
 	const toggleOpen = () => {
 		setOpen(!open)
-		dispatch(clearErrors())
+		dispatch(clearError('addPost'))
 	}
 
 	const handleInputChange = (e: ChangeEvent<HTMLInputElement>) => {
@@ -65,8 +65,8 @@ const AddPost: FC = () => {
 							label="Type something here..."
 							multiline
 							rows="2"
-							error={!!errors.body}
-							helperText={errors.body}
+							error={!!errors.addPost.body}
+							helperText={errors.addPost.body}
 							onChange={handleInputChange}
 							fullWidth
 						/>
