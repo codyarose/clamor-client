@@ -1,6 +1,6 @@
-import React, { useState, ChangeEvent, FormEvent } from 'react'
+import React, { useState, ChangeEvent, FormEvent, useEffect } from 'react'
 import styled from 'styled-components'
-import { Link } from 'react-router-dom'
+import { Link, useHistory } from 'react-router-dom'
 import CircularProgress from '@material-ui/core/CircularProgress'
 import { useSelector, useDispatch } from 'react-redux'
 import Typography from '@material-ui/core/Typography'
@@ -9,10 +9,11 @@ import { loginUser } from '../redux/modules/user'
 import { RootState } from '../redux/store'
 import FormElements from '../components/common/FormElements'
 import Button from '@material-ui/core/Button'
+import { clearError } from '../redux/modules/errors'
 
 export const Login = () => {
-	// const { errors } = useSelector((state: RootState) => state.ui)
-	const { loading, errors } = useSelector((state: RootState) => state.user)
+	const { loading } = useSelector((state: RootState) => state.user)
+	const errors = useSelector((state: RootState) => state.errors)
 	const dispatch = useDispatch()
 
 	const [formState, setFormState] = useState({
@@ -30,6 +31,11 @@ export const Login = () => {
 		setFormState({ ...formState, [name]: value })
 	}
 
+	const history = useHistory()
+	useEffect(() => {
+		return history.listen(() => dispatch(clearError('login')))
+	}, [history, dispatch])
+
 	return (
 		<StyledLogin>
 			<StyledTitleContainer>
@@ -45,8 +51,8 @@ export const Login = () => {
 						value={formState.email}
 						onChange={handleChange}
 						variant="filled"
-						helperText={errors.email}
-						error={!!errors.email}
+						helperText={errors.login.email}
+						error={!!errors.login.email}
 					/>
 					<StyledTextInput
 						id="password"
@@ -56,8 +62,8 @@ export const Login = () => {
 						value={formState.password}
 						onChange={handleChange}
 						variant="filled"
-						helperText={errors.password}
-						error={!!errors.password}
+						helperText={errors.login.password}
+						error={!!errors.login.password}
 					/>
 					{errors.general && (
 						<FormElements.ErrorText variant="body2">

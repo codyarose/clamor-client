@@ -1,5 +1,5 @@
-import React, { useState, ChangeEvent, FormEvent } from 'react'
-import { Link } from 'react-router-dom'
+import React, { useState, ChangeEvent, FormEvent, useEffect } from 'react'
+import { Link, useHistory } from 'react-router-dom'
 import styled from 'styled-components'
 import CircularProgress from '@material-ui/core/CircularProgress'
 
@@ -7,9 +7,11 @@ import { signupUser } from '../redux/modules/user'
 import { RootState } from '../redux/store'
 import FormElements from '../components/common/FormElements'
 import { useSelector, useDispatch } from 'react-redux'
+import { clearError } from '../redux/modules/errors'
 
 export const Signup = () => {
-	const { loading, errors } = useSelector((state: RootState) => state.ui)
+	const { loading } = useSelector((state: RootState) => state.user)
+	const errors = useSelector((state: RootState) => state.errors)
 	const dispatch = useDispatch()
 
 	const [formState, setFormState] = useState({
@@ -29,6 +31,11 @@ export const Signup = () => {
 		setFormState({ ...formState, [name]: value })
 	}
 
+	const history = useHistory()
+	useEffect(() => {
+		return history.listen(() => dispatch(clearError('signup')))
+	}, [history, dispatch])
+
 	return (
 		<div>
 			<div>
@@ -47,8 +54,8 @@ export const Signup = () => {
 						label="Email"
 						value={formState.email}
 						onChange={handleChange}
-						helperText={errors.email}
-						error={!!errors.email}
+						helperText={errors.signup.email}
+						error={!!errors.signup.email}
 					/>
 					<StyledTextInput
 						id="handle"
@@ -57,8 +64,8 @@ export const Signup = () => {
 						label="Username"
 						value={formState.handle}
 						onChange={handleChange}
-						helperText={errors.handle}
-						error={!!errors.handle}
+						helperText={errors.signup.handle}
+						error={!!errors.signup.handle}
 					/>
 					<StyledTextInput
 						id="password"
@@ -67,8 +74,8 @@ export const Signup = () => {
 						label="Password"
 						value={formState.password}
 						onChange={handleChange}
-						helperText={errors.password}
-						error={!!errors.password}
+						helperText={errors.signup.password}
+						error={!!errors.signup.password}
 					/>
 					<StyledTextInput
 						id="confirmPassword"
@@ -77,8 +84,8 @@ export const Signup = () => {
 						label="Confirm password"
 						value={formState.confirmPassword}
 						onChange={handleChange}
-						helperText={errors.confirmPassword}
-						error={!!errors.confirmPassword}
+						helperText={errors.signup.confirmPassword}
+						error={!!errors.signup.confirmPassword}
 					/>
 					{errors.general && (
 						<FormElements.ErrorText variant="body2">

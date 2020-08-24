@@ -1,8 +1,9 @@
 import { createSlice, Dispatch, createAsyncThunk } from '@reduxjs/toolkit'
 import axios from 'axios'
 
-import { loadingUI, clearErrors, setErrors } from './ui'
+import { setErrors } from './ui'
 import { AppDispatch } from '../store'
+import { setError, clearError } from './errors'
 
 export const getUserData = createAsyncThunk('user/getUserData', async () => {
 	const user = await axios.get('/user', {
@@ -11,51 +12,51 @@ export const getUserData = createAsyncThunk('user/getUserData', async () => {
 	return user.data
 })
 
-interface User {
+interface UserData {
 	email: string
 	password: string
 }
 
 export const loginUser = createAsyncThunk<
 	unknown,
-	User,
+	UserData,
 	{
 		dispatch: AppDispatch
-		rejectWithValue: Error
 	}
->('user/loginUser', async (userData: User, { dispatch, rejectWithValue }) => {
+>('user/loginUser', async (userData, { dispatch }) => {
 	try {
 		const login = await axios.post('/login', { ...userData })
 		setAuthHeader(login.data.token)
 		dispatch(getUserData())
-		// dispatch(clearErrors())
+		dispatch(clearError('login'))
 	} catch (error) {
-		return rejectWithValue(error.response?.data)
+		dispatch(setError('login', error.response.data))
 	}
 })
 
-export const signupUser = createAsyncThunk(
-	'user/signupUser',
-	async (
-		newUserData: {
-			email: string
-			password: string
-			confirmPassword: string
-			handle: string
-		},
-		{ dispatch },
-	) => {
-		dispatch(loadingUI())
-		try {
-			const signup = await axios.post('/signup', { ...newUserData })
-			setAuthHeader(signup.data.token)
-			dispatch(getUserData())
-			dispatch(clearErrors())
-		} catch (error) {
-			dispatch(setErrors(error.response.data))
-		}
-	},
-)
+interface NewUserData {
+	email: string
+	password: string
+	confirmPassword: string
+	handle: string
+}
+
+export const signupUser = createAsyncThunk<
+	unknown,
+	NewUserData,
+	{
+		dispatch: AppDispatch
+	}
+>('user/signupUser', async (newUserData, { dispatch }) => {
+	try {
+		const signup = await axios.post('/signup', { ...newUserData })
+		setAuthHeader(signup.data.token)
+		dispatch(getUserData())
+		dispatch(clearError('signup'))
+	} catch (error) {
+		dispatch(setError('signup', error.response.data))
+	}
+})
 
 export const uploadImage = createAsyncThunk(
 	'user/uploadImage',
@@ -99,25 +100,12 @@ interface Like {
 	postId: string
 }
 
-interface Errors {
-	password: string
-	general: string
-	email: string
-}
-
 export interface UserState {
 	authenticated: boolean
 	loading: boolean
 	credentials: Partial<Credentials>
 	likes: Like[]
 	notifications: any[]
-	errors: Errors
-}
-
-const initialErrorsState: Errors = {
-	password: '',
-	general: '',
-	email: '',
 }
 
 const initialState: UserState = {
@@ -126,7 +114,6 @@ const initialState: UserState = {
 	credentials: {},
 	likes: [],
 	notifications: [],
-	errors: initialErrorsState,
 }
 
 const userSlice = createSlice({
@@ -169,18 +156,22 @@ const userSlice = createSlice({
 			state.likes = likes
 			state.notifications = notifications
 		})
-		builder.addCase(getUserData.rejected, (state, { payload }: any) => {
-			state.errors = payload
-		})
 		builder.addCase(loginUser.pending, (state) => {
 			state.loading = true
 		})
 		builder.addCase(loginUser.fulfilled, (state) => {
 			state.loading = false
-			state.errors = initialErrorsState
 		})
-		builder.addCase(loginUser.rejected, (state, { payload }: any) => {
-			state.errors = payload
+		builder.addCase(loginUser.rejected, (state) => {
+			state.loading = false
+		})
+		builder.addCase(signupUser.pending, (state) => {
+			state.loading = true
+		})
+		builder.addCase(signupUser.fulfilled, (state) => {
+			state.loading = false
+		})
+		builder.addCase(signupUser.rejected, (state) => {
 			state.loading = false
 		})
 	},

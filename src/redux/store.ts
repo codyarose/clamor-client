@@ -4,11 +4,13 @@ import { combineReducers } from 'redux'
 import userReducer from './modules/user'
 import uiReducer from './modules/ui'
 import dataReducer from './modules/data'
+import errorsReducer from './modules/errors'
 
 const reducer = combineReducers({
 	user: userReducer,
 	ui: uiReducer,
 	data: dataReducer,
+	errors: errorsReducer,
 })
 
 const store = configureStore({
