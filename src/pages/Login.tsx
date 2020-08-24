@@ -1,14 +1,18 @@
 import React, { useState, ChangeEvent, FormEvent } from 'react'
+import styled from 'styled-components'
 import { Link } from 'react-router-dom'
 import CircularProgress from '@material-ui/core/CircularProgress'
 import { useSelector, useDispatch } from 'react-redux'
+import Typography from '@material-ui/core/Typography'
 
 import { loginUser } from '../redux/modules/user'
 import { RootState } from '../redux/store'
 import FormElements from '../components/common/FormElements'
+import Button from '@material-ui/core/Button'
 
 export const Login = () => {
-	const { loading, errors } = useSelector((state: RootState) => state.ui)
+	// const { errors } = useSelector((state: RootState) => state.ui)
+	const { loading, errors } = useSelector((state: RootState) => state.user)
 	const dispatch = useDispatch()
 
 	const [formState, setFormState] = useState({
@@ -27,12 +31,12 @@ export const Login = () => {
 	}
 
 	return (
-		<div>
-			<div>
-				<FormElements.Title variant="h3" component="h1">
-					Login
-				</FormElements.Title>
-				<FormElements.Form noValidate onSubmit={handleSubmit}>
+		<StyledLogin>
+			<StyledTitleContainer>
+				<StyledTitle variant="h1">Clamor</StyledTitle>
+			</StyledTitleContainer>
+			<StyledFormContainer>
+				<StyledForm noValidate onSubmit={handleSubmit}>
 					<FormElements.TextInput
 						id="email"
 						name="email"
@@ -40,7 +44,7 @@ export const Login = () => {
 						label="Email"
 						value={formState.email}
 						onChange={handleChange}
-						fullWidth={true}
+						variant="filled"
 						helperText={errors.email}
 						error={!!errors.email}
 					/>
@@ -51,7 +55,7 @@ export const Login = () => {
 						label="Password"
 						value={formState.password}
 						onChange={handleChange}
-						fullWidth={true}
+						variant="filled"
 						helperText={errors.password}
 						error={!!errors.password}
 					/>
@@ -61,7 +65,7 @@ export const Login = () => {
 						</FormElements.ErrorText>
 					)}
 					<FormElements.Submit
-						variant="contained"
+						variant="outlined"
 						color="primary"
 						type="submit"
 						disabled={loading}
@@ -69,15 +73,67 @@ export const Login = () => {
 						{loading ? (
 							<CircularProgress color="inherit" size={24} />
 						) : (
-							'Login'
+							'Log in'
 						)}
 					</FormElements.Submit>
-					<small>
-						Don't have an account? Sign up{' '}
-						<Link to="/signup">here</Link>
-					</small>
-				</FormElements.Form>
-			</div>
-		</div>
+				</StyledForm>
+				<StyledSignupContainer>
+					<Typography variant="h5" component="span">
+						or
+					</Typography>
+					<Button
+						component={Link}
+						to="/signup"
+						variant="contained"
+						color="primary"
+						fullWidth
+						size="large"
+					>
+						Signup
+					</Button>
+				</StyledSignupContainer>
+			</StyledFormContainer>
+		</StyledLogin>
 	)
 }
+
+const StyledLogin = styled.div`
+	display: grid;
+	grid-template-columns: 1fr 1fr;
+	grid-template-rows: 100vh;
+	& > * {
+		display: flex;
+		flex-direction: column;
+		justify-content: center;
+		align-items: center;
+		padding: 1rem;
+	}
+`
+
+const StyledTitleContainer = styled.div`
+	background-color: rgb(113, 201, 248);
+`
+
+const StyledTitle = styled(Typography)`
+	color: #fff;
+	&& {
+		font-family: inherit;
+		font-weight: 400;
+	}
+`
+
+const StyledFormContainer = styled.div`
+	/* margin-bottom: 2rem; */
+`
+
+const StyledForm = styled(FormElements.Form)`
+	margin-bottom: 2rem;
+`
+
+const StyledSignupContainer = styled.div`
+	text-align: center;
+	& > span {
+		display: inline-block;
+		margin-bottom: 2rem;
+	}
+`

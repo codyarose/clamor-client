@@ -2,6 +2,7 @@ import { createSlice, Dispatch, createAsyncThunk } from '@reduxjs/toolkit'
 import axios from 'axios'
 
 import { loadingUI, clearErrors, setErrors } from './ui'
+import { AppDispatch } from '../store'
 
 export const getUserData = createAsyncThunk('user/getUserData', async () => {
 	const user = await axios.get('/user', {
@@ -10,20 +11,28 @@ export const getUserData = createAsyncThunk('user/getUserData', async () => {
 	return user.data
 })
 
-export const loginUser = createAsyncThunk(
-	'user/loginUser',
-	async (userData: { email: string; password: string }, { dispatch }) => {
-		dispatch(loadingUI())
-		try {
-			const login = await axios.post('/login', { ...userData })
-			setAuthHeader(login.data.token)
-			dispatch(getUserData())
-			dispatch(clearErrors())
-		} catch (error) {
-			dispatch(setErrors(error.response.data))
-		}
-	},
-)
+interface User {
+	email: string
+	password: string
+}
+
+export const loginUser = createAsyncThunk<
+	unknown,
+	User,
+	{
+		dispatch: AppDispatch
+		rejectWithValue: Error
+	}
+>('user/loginUser', async (userData: User, { dispatch, rejectWithValue }) => {
+	try {
+		const login = await axios.post('/login', { ...userData })
+		setAuthHeader(login.data.token)
+		dispatch(getUserData())
+		// dispatch(clearErrors())
+	} catch (error) {
+		return rejectWithValue(error.response?.data)
+	}
+})
 
 export const signupUser = createAsyncThunk(
 	'user/signupUser',
@@ -90,13 +99,25 @@ interface Like {
 	postId: string
 }
 
+interface Errors {
+	password: string
+	general: string
+	email: string
+}
+
 export interface UserState {
 	authenticated: boolean
 	loading: boolean
 	credentials: Partial<Credentials>
 	likes: Like[]
 	notifications: any[]
-	error: {}
+	errors: Errors
+}
+
+const initialErrorsState: Errors = {
+	password: '',
+	general: '',
+	email: '',
 }
 
 const initialState: UserState = {
@@ -105,7 +126,7 @@ const initialState: UserState = {
 	credentials: {},
 	likes: [],
 	notifications: [],
-	error: {},
+	errors: initialErrorsState,
 }
 
 const userSlice = createSlice({
@@ -148,8 +169,19 @@ const userSlice = createSlice({
 			state.likes = likes
 			state.notifications = notifications
 		})
-		builder.addCase(getUserData.rejected, (state, { error }) => {
-			state.error = error
+		builder.addCase(getUserData.rejected, (state, { payload }: any) => {
+			state.errors = payload
+		})
+		builder.addCase(loginUser.pending, (state) => {
+			state.loading = true
+		})
+		builder.addCase(loginUser.fulfilled, (state) => {
+			state.loading = false
+			state.errors = initialErrorsState
+		})
+		builder.addCase(loginUser.rejected, (state, { payload }: any) => {
+			state.errors = payload
+			state.loading = false
 		})
 	},
 })

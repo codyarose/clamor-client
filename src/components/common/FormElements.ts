@@ -6,9 +6,9 @@ import Button from '@material-ui/core/Button'
 
 const Form = styled.form`
 	display: flex;
-	flex-flow: column;
+	/* flex-flow: column;
 	align-items: center;
-	text-align: center;
+	text-align: center; */
 `
 
 const Title = styled(Typography)`
@@ -20,9 +20,9 @@ const Title = styled(Typography)`
 
 const TextInput = styled(TextField)`
 	&& {
-		margin-bottom: 1rem;
+		margin-right: 1rem;
 		&:last-of-type {
-			margin-bottom: 1.5rem;
+			/* margin-bottom: 1.5rem; */
 		}
 	}
 `
@@ -36,7 +36,9 @@ const ErrorText = styled(Typography)`
 
 const Submit = styled(Button)`
 	&& {
-		margin-bottom: 1rem;
+		font-weight: 700;
+		padding: 0 1em;
+		/* margin-bottom: 1rem; */
 	}
 `
 
