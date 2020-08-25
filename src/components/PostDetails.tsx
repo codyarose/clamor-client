@@ -23,9 +23,7 @@ interface Props {
 const PostDetails: FC<Props> = ({ postId }) => {
 	const {
 		post: { body, createdAt, userImage, userHandle },
-		loading,
 	} = useSelector((state: RootState) => state.data)
-	// const { loading } = useSelector((state: RootState) => state.ui)
 	const dispatch = useDispatch()
 
 	const [open, setOpen] = useState(false)
@@ -53,7 +51,7 @@ const PostDetails: FC<Props> = ({ postId }) => {
 					<CloseIcon />
 				</TooltipButton>
 				<StyledDialogContent>
-					{loading ? (
+					{!body ? (
 						<StyledCircularProgressContainer>
 							<CircularProgress size={100} />
 						</StyledCircularProgressContainer>
