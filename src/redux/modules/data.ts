@@ -128,7 +128,7 @@ const dataSlice = createSlice({
 			state.loading = false
 		})
 		builder.addCase(getPost.pending, (state) => {
-			state.loading = true
+			state.post = initialState.post
 		})
 		builder.addCase(getPost.fulfilled, (state, { payload }) => {
 			state.post = payload
