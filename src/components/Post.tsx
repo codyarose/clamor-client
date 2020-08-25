@@ -13,7 +13,7 @@ import ChatIcon from '@material-ui/icons/Chat'
 
 import TooltipButton from './common/TooltipButton'
 import ToggleLikeButton from './common/ToggleLikeButton'
-import PostDetails from './PostDetails'
+import Comments from './Comments'
 import DeletePost from './DeletePost'
 import { RootState } from '../redux/store'
 import { toggleLike, PostProps } from '../redux/modules/data'
@@ -38,6 +38,7 @@ const Post: FC<{ post: PostProps }> = ({
 	const dispatch = useDispatch()
 
 	const [alreadyLiked, setAlreadyLiked] = useState(false)
+	const [showComments, setShowComments] = useState(false)
 
 	useEffect(() => {
 		likes && likes.find((like) => like.postId === postId)
@@ -78,12 +79,17 @@ const Post: FC<{ post: PostProps }> = ({
 							likeHandler={handleToggleLike}
 						/>
 						<span>{likeCount} likes</span>
-						<TooltipButton title="Comments">
+						<TooltipButton
+							title="Comments"
+							onClick={() => setShowComments(true)}
+						>
 							<ChatIcon color="primary" />
 						</TooltipButton>
 						<span>{commentCount} comments</span>
 					</StyledContent>
-					{postId && <PostDetails postId={postId} />}
+					{commentCount && (
+						<Comments open={showComments} postId={postId} />
+					)}
 				</StyledCard>
 			)}
 		</>
@@ -97,17 +103,19 @@ const StyledHandle = styled((props) => <Typography {...props} />)`
 `
 
 const StyledCard = styled(Card)`
-	display: flex;
+	/* display: flex; */
 	margin-bottom: 20px;
+	display: grid;
+	grid-template-columns: 200px auto;
+	grid-template-rows: auto auto;
 `
 
 const StyledImage = styled((props) => <CardMedia {...props} />)`
-	min-width: 200px;
+	// min-width: 200px;
 `
 
 const StyledContent = styled(CardContent)`
 	position: relative;
-	width: 100%;
 	&& {
 		padding: 1.5rem;
 	}

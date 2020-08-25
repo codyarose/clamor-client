@@ -82,6 +82,13 @@ export const addPost = createAsyncThunk<
 	}
 })
 
+export interface Comment {
+	body: string
+	createdAt: Date | string
+	userImage: string
+	userHandle: string
+}
+
 export interface PostProps {
 	body: string
 	postId: string
@@ -90,6 +97,7 @@ export interface PostProps {
 	commentCount: number
 	userImage: string
 	userHandle: string
+	comments: Comment[]
 }
 
 export interface DataState {
@@ -108,6 +116,7 @@ const initialState: DataState = {
 		commentCount: 0,
 		userImage: '',
 		userHandle: '',
+		comments: [],
 	},
 	loading: false,
 }
